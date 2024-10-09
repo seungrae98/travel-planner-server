@@ -1,0 +1,123 @@
+// 출력 결과물 복사/붙여넣기 후, 확인을 위한 파일이므로 실제 코드 실행과는 무관합니다.
+// 콘솔에 출력된 ChatGPT의 결과물을 복사 붙여넣기 후, 코드 정렬 단축키를 사용해보세요.
+
+{
+  "category": 1,
+  "response_message": "베이징 여행 계획을 제안드립니다.",
+  "content": {
+    "travel_city": "베이징",
+    "travel_start_date": "10/03",
+    "travel_end_date": "10/05",
+    "attraction_list": [
+      {
+        "name": "만리장성",
+        "date": "03",
+        "start_time": "09:00",
+        "end_time": "12:00",
+        "detail": "세계적인 유산이자 중국의 대표적인 역사적 장소"
+      },
+      {
+        "name": "자금성",
+        "date": "03",
+        "start_time": "13:00",
+        "end_time": "15:00",
+        "detail": "중국 황제들의 궁전으로 사용되었던 놀라운 건축물"
+      },
+      {
+        "name": "천안문 광장",
+        "date": "03",
+        "start_time": "16:00",
+        "end_time": "18:00",
+        "detail": "세계에서 가장 큰 광장 중 하나로 역사적 사건의 중심지"
+      },
+      {
+        "name": "북경 올림픽 공원",
+        "date": "04",
+        "start_time": "09:00",
+        "end_time": "11:00",
+        "detail": "2008년 하계 올림픽을 개최한 장소로 현대적인 디자인과 체육 시설"
+      },
+      {
+        "name": "이화원",
+        "date": "04",
+        "start_time": "12:00",
+        "end_time": "15:00",
+        "detail": "고대 중국의 궁정 정원으로 아름다운 풍경을 자랑"
+      },
+      {
+        "name": "용화사",
+        "date": "04",
+        "start_time": "16:00",
+        "end_time": "18:00",
+        "detail": "베이징에서 가장 유명한 불교 사원 중 하나"
+      },
+      {
+        "name": "쟝궈먼",
+        "date": "05",
+        "start_time": "09:00",
+        "end_time": "11:00",
+        "detail": "중국 현대사의 중요한 사건들이 진행되었던 장소"
+      },
+      {
+        "name": "난뤄구샹",
+        "date": "05",
+        "start_time": "12:00",
+        "end_time": "14:00",
+        "detail": "베이징의 전통 허통을 탐험할 수 있는 길"
+      },
+      {
+        "name": "798 예술지구",
+        "date": "05",
+        "start_time": "15:00",
+        "end_time": "18:00",
+        "detail": "현대 미술과 문화의 거점"
+      }
+    ],
+    "restaurant_list": [
+      {
+        "name": "대당차관",
+        "date": "03",
+        "start_time": "12:00",
+        "end_time": "13:00",
+        "detail": "베이징 오리 요리로 유명한 전통 중국 음식점"
+      },
+      {
+        "name": "양정사",
+        "date": "03",
+        "start_time": "18:00",
+        "end_time": "19:30",
+        "detail": "다양한 딤섬과 광둥 요리를 맛볼 수 있는 곳"
+      },
+      {
+        "name": "안쥐",
+        "date": "04",
+        "start_time": "11:00",
+        "end_time": "12:00",
+        "detail": "중국 전통 스타일의 채식 요리 전문점"
+      },
+      {
+        "name": "티엔밍족",
+        "date": "04",
+        "start_time": "19:00",
+        "end_time": "20:30",
+        "detail": "현대 중국 퓨전 요리를 선보이는 레스토랑"
+      },
+      {
+        "name": "고궁",
+        "date": "05",
+        "start_time": "11:00"햣
+        "end_time": "12:00",
+        "detail": "중국 전통 요리와 현대적인 분위기의 레스토랑"
+      }
+    ],
+    "accommodation_list": [
+      {
+        "name": "펜타호텔 베이징",
+        "date": "04",
+        "start_time": "14:00",
+        "end_time": "12:00",
+        "detail": "현대적이고 편안한 숙박 시설을 제공"
+      }
+    ]
+  }
+}
