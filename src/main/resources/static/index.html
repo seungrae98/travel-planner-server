@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Visual Travel Planner</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f8;
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px 0 0 10px;
+            font-size: 16px;
+            outline: none;
+            background-color: #f0f0f0;
+        }
+
+        button {
+            padding: 15px 20px;
+            background-color: #10a37f;
+            border: none;
+            border-radius: 0 10px 10px 0;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0e8a6a;
+        }
+
+        #responseContainer {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            color: #555;
+            display: none; /* Initially hidden */
+        }
+
+        @media (max-width: 600px) {
+            .input-container {
+                flex-direction: column;
+                width: 90%;
+            }
+
+            input {
+                border-radius: 10px 10px 0 0;
+            }
+
+            button {
+                width: 100%;
+                border-radius: 0 0 10px 10px;
+            }
+
+            #responseContainer {
+                width: 90%;
+            }
+        }
+    </style>
+    <script>
+        async function redirectToChat() {
+            const inputText = document.getElementById("userInput").value;
+            const responseContainer = document.getElementById("responseContainer");
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/v1/chatgpt/chat?message=${encodeURIComponent(inputText)}`);
+                const data = await response.text();
+
+                // Display the response
+                responseContainer.innerText = data;
+                responseContainer.style.display = "block"; // Show the response container
+            } catch (error) {
+                responseContainer.innerText = "Error: " + error.message;
+                responseContainer.style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Hello, how can I help?</h1>
+<div class="input-container">
+    <input type="text" id="userInput" placeholder="Enter your message">
+    <button onclick="redirectToChat()">Ask ChatGPT</button>
+</div>
+
+<!-- Container for displaying the ChatGPT response -->
+<div id="responseContainer"></div>
+</body>
+</html>
