@@ -1,10 +1,13 @@
 package com.haandy.travel_planner_server.domain.chatGPT.service;
 
+import com.haandy.travel_planner_server.domain.chatGPT.data.ChatGPTPlan;
 import com.haandy.travel_planner_server.domain.chatGPT.dto.request.ChatGPTRequestGetRequest;
 import com.haandy.travel_planner_server.domain.chatGPT.dto.response.ChatGPTPlanGetResponse;
 import com.haandy.travel_planner_server.domain.chatGPT.dto.response.ChatGPTRequestGetResponse;
 import com.haandy.travel_planner_server.domain.chatGPT.dto.response.ChatGPTResponseGetResponse;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -19,11 +22,70 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class ChatGPTService {
 
-    private List<String[]> travelListCpy, restaurantListCpy, accommodationListCpy;
+    private int DAYS = 1;
+    private String RESPONSE; // ChatGPT 생 응답
+    private JSONObject JSONOBJECT; // Clean json
+
+    public String processChatGPT(String message) {
+        try {
+            // ChatGPTService에서 처리된 응답을 문자열로 받아옴
+            System.out.println("User Message: \n" + message);
+
+            String prefix = "너는 내 여행 계획 비서이며, 나에게 여행 계획을 짜줘야해. 나는 네 여행 계획을 참고해서 여행을 할거야.\n";
+            String suffix = """         
+                    \n
+                      사용자의 문장을 분석해서 JSON 파일 형식으로 출력해.
+                      
+                      모든 출력 필수 키값은\s
+                      { “category”, “response_message”, “content” }\s
+                      이며 아래 요구사항에 맞게 출력해
+                      
+                      category: 사용자 문장의 목적이 아래 카테고리 중 어디에 해당하는지 분석하여 번호 만을 출력해
+                      1. 여행 계획 추천
+                      2. 여행 일정 변경
+                      3. 여행지 정보 검색
+                      4. 일정 간 경로 검색
+                      5. 해당 없음
+                      
+                      response_message: 사용자 문장에 대한 챗지피티 답변. 그것이 만약\s
+                      1번 카테고리일 경우: 여행도시와 여행날짜 정보가 명확하지 않다면 다시 물어보고, 명확하다면 사용자 문장에 맞는 챗지피티 답변을 출력해.
+                      5번 카테고리일 경우: 여행 계획과 관련된 질문을 하라고 출력해.\s
+                      
+                      content: 카테고리마다 아래와 같이 다른 키값을 하위에 출력해.
+                      1번 카테고리일 경우:\s
+                      {\s
+                      	travel_city,\s
+                      	travel_start_date: MM/dd,\s
+                      	travel_end_date: MM/dd,\s
+                      	travel_days: dd (총 여행 일 수),
+                      	attraction_list: 추천 관광지,
+                      	restaurant_list: 추천 식당
+                      }
+                      단, attraction_list, restaurant_list는 아래에 키값을 배열로 나열해
+                      	{
+                      		day: 여행 몇 일차(int),\s
+                      		name: 장소 이름, \s
+                      		detail: 추천이유 혹은 장소 설명\s
+                      	}
+                      	(attraction과 restaurant는 반드시 각 날짜별로 하루에 3개씩 추천하고, detail에는 ,를 포함시키지 마.)
+                      
+                      2, 3, 4, 5번 카테고리일 경우 값은 0이야.
+                    """;
+
+            message = prefix + '\n' + message + suffix;
+            RESPONSE = getChatGPTResponse(message);
+            System.out.println("ChatGPT Response: \n" + RESPONSE + "\n===================================");
+
+            return RESPONSE;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error occurred: " + e.getMessage();
+        }
+    }
 
     // ChatGPT와의 통신을 통해 메시지 결과를 받아옴
     public String getChatGPTResponse(String message) throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder("travel_planner_env/bin/python3", "python/chatgpt.py", message);
+        ProcessBuilder processBuilder = new ProcessBuilder("python3", "python/chatgpt.py", message);
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
 
@@ -34,156 +96,48 @@ public class ChatGPTService {
             result.append(line);
         }
 
-        processChatGPTResponse(result.toString());
-
         // 응답을 문자열 형태로 반환
         return result.toString();
     }
 
     // 받아온 chatGPT 메시지 결과를 카테고리에 맞게 추출 함수를 호출
-    public void processChatGPTResponse(String response) {
+    public int categorizeChatGPT(String response) {
 
-        if (response.contains("카테고리 번호: 1")) {
-            extractData1(response);
-        }
-        if (response.contains("카테고리 번호: 2")) {
-//            extractData2(response);
-        }
-        if (response.contains("카테고리 번호: 3")) {
-//            extractData3(response);
-        }
-        if (response.contains("카테고리 번호: 4")) {
-//            extractData4(response);
-        }
-        if (response.contains("카테고리 번호: 5")) {
-//            extractData5(response);
-        }
+        // JSONObject 생성
+        String cleanedJson = response.replaceAll("^```json|```$", "").trim();
+        JSONOBJECT = new JSONObject(cleanedJson);
 
+        // category 객체 가져오기
+        int category = JSONOBJECT.getInt("category");
+        System.out.println("Category: " + category);
+
+        return category;
     }
 
-    private void extractData1(String response) {
-        // 정규 표현식
-        String cityPattern = "여행도시:\\s*(\\S+)";
-        String datePattern = "여행날짜:\\s*(\\d{2}/\\d{2})~(\\d{2}/\\d{2})";
-        String travelPattern = "여행지\\[(.*?)\\]";
-        String restaurantPattern = "식당\\[(.*?)\\]";
-        String accommodationPattern = "숙소\\[(.*?)\\]";
-
-        // 장소와 시간 추출 패턴 (여행지, 식당, 숙소)
-        String travelTimePattern = "([가-힣\\s\\w]+)\\((\\d+)(일)\\s*(\\d{2}:\\d{2})~(\\d{2}:\\d{2})\\)";
-        String restaurantTimePattern = "([가-힣\\s\\w]+)\\((\\d+)(일)\\s*(\\d{2}:\\d{2})~(\\d{2}:\\d{2})\\)";
-        String accommodationTimePattern = "([가-힣\\s\\w]+)\\((\\d+)(일)\\)";
-
-        // 여행 도시
-        Matcher cityMatcher = Pattern.compile(cityPattern).matcher(response);
-        if (cityMatcher.find()) {
-            String city = cityMatcher.group(1);
-            System.out.println("여행도시 : " + city); //출력
-        }
-
-        // 여행 날짜
-        Matcher dateMatcher = Pattern.compile(datePattern).matcher(response);
-        if (dateMatcher.find()) {
-            String startDate = dateMatcher.group(1);
-            String endDate = dateMatcher.group(2);
-            System.out.println("시작날짜 : " + startDate + ", 종료날짜 : " + endDate); //출력
-        }
-
-        // 여행지
-        Matcher travelMatcher = Pattern.compile(travelPattern).matcher(response);
-        if (travelMatcher.find()) {
-            String travelPlaces = travelMatcher.group(1);
-            Matcher placeTimeMatcher = Pattern.compile(travelTimePattern).matcher(travelPlaces);
-            List<String[]> travelList = new ArrayList<>();
-
-            while (placeTimeMatcher.find()) {
-                String place = placeTimeMatcher.group(1).trim();
-                String date = placeTimeMatcher.group(2);  // 날짜 추출
-                String startTime = placeTimeMatcher.group(4); // 시작 시간
-                String endTime = placeTimeMatcher.group(5);   // 종료 시간
-                travelList.add(new String[]{place, date, startTime, endTime});
-            }
-
-            travelListCpy = new ArrayList<>(travelList);
-
-            System.out.println("--여행지--"); //출력
-            for (String[] travel : travelList) {
-                System.out.println("장소: " + travel[0] + ", 날짜(일): " + travel[1] + ", 시작시간: " + travel[2] + ", 종료시간: " + travel[3]);
-            }
-        }
-
-        // 식당
-        Matcher restaurantMatcher = Pattern.compile(restaurantPattern).matcher(response);
-        if (restaurantMatcher.find()) {
-            String restaurants = restaurantMatcher.group(1);
-            Matcher restaurantPlaceTimeMatcher = Pattern.compile(restaurantTimePattern).matcher(restaurants);
-            List<String[]> restaurantList = new ArrayList<>();
-
-            while (restaurantPlaceTimeMatcher.find()) {
-                String place = restaurantPlaceTimeMatcher.group(1).trim();
-                String date = restaurantPlaceTimeMatcher.group(2);  // 날짜 추출
-                String startTime = restaurantPlaceTimeMatcher.group(4); // 시작 시간
-                String endTime = restaurantPlaceTimeMatcher.group(5);   // 종료 시간
-                restaurantList.add(new String[]{place, date, startTime, endTime});
-            }
-
-            restaurantListCpy = new ArrayList<>(restaurantList);
-
-            System.out.println("--식당--"); //출력
-            for (String[] restaurant : restaurantList) {
-                System.out.println("장소: " + restaurant[0] + ", 날짜(일): " + restaurant[1] + ", 시작시간: " + restaurant[2] + ", 종료시간: " + restaurant[3]);
-            }
-        }
-
-        // 숙소
-        Matcher accommodationMatcher = Pattern.compile(accommodationPattern).matcher(response);
-        if (accommodationMatcher.find()) {
-            String accommodations = accommodationMatcher.group(1);
-            Matcher accommodationMatcherWithDate = Pattern.compile(accommodationTimePattern).matcher(accommodations);
-            List<String[]> accommodationList = new ArrayList<>();
-
-            while (accommodationMatcherWithDate.find()) {
-                String accommodation = accommodationMatcherWithDate.group(1).trim();
-                String date = accommodationMatcherWithDate.group(2); // 날짜 추출
-                accommodationList.add(new String[]{accommodation, date});
-            }
-
-            accommodationListCpy = new ArrayList<>(accommodationList);
-
-            System.out.println("--숙소--"); //출력
-            for (String[] accommodation : accommodationList) {
-                System.out.println("숙소: " + accommodation[0] + ", 날짜(일): " + accommodation[1]);
-            }
-        }
-
-        Iterator<String[]> trvlIt = travelListCpy.iterator();
-        Iterator<String[]> rstrIt = restaurantListCpy.iterator();
-        Iterator<String[]> accmIt = accommodationListCpy.iterator();
-
-        System.out.println("***** trvlIt *****");
-        while (trvlIt.hasNext()) System.out.println(trvlIt.next()[0]);
-        System.out.println("***** rstrIt *****");
-        while (rstrIt.hasNext()) System.out.println(rstrIt.next()[0]);
-        System.out.println("***** accmIt *****");
-        while (accmIt.hasNext()) System.out.println(accmIt.next()[0]);
-
-    }
-
-    public ChatGPTRequestGetResponse getChatGPTRequest(ChatGPTRequestGetRequest request) {
-        /**
-         * TODO: GPT에 요청 보내서 요청 타입 분류하기
+    public ChatGPTRequestGetResponse getChatGPTRequest(ChatGPTRequestGetRequest request) { // 몇 번 category?
+        /*
+         * TODO: GPT에 요청 보내서 요청 타입 분류하기 (완)
          *
          * request.requestId:       요청 번호
          * request.requestContent:  사용자 요청
          */
+        int category = 0;
+        try {
+            processChatGPT(request.requestContent());
+            category = categorizeChatGPT(RESPONSE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error occurred: " + e.getMessage());
+        }
 
-        return new ChatGPTRequestGetResponse(1, 1, "Response from chatGPT");
+        return new ChatGPTRequestGetResponse(1, category, "Response from chatGPT");
+        // return new ChatGPTRequestGetResponse(request.requestId(), category, "Response from chatGPT");
     }
 
     public ChatGPTResponseGetResponse getChatGPTResponseId(String requestId) {
 
-         /**
-         * TODO: GPT 응답 가져오기
+        /**
+         * TODO: GPT 응답(계획 외 정보) 가져오기
          *
          * requestId: 요청 번호
          */
@@ -194,13 +148,10 @@ public class ChatGPTService {
     public List<ChatGPTPlanGetResponse> getChatGPTPlanList(String requestId) {
 
         /**
-         * TODO: GPT 여행 계획 가져오기
+         * TODO: GPT 여행 계획 가져오기 (완)
          *
          * requestId: 요청 번호
          */
-
-
-
         return getDummyChatGPTPlanList();
     }
 
@@ -208,58 +159,65 @@ public class ChatGPTService {
     public List<ChatGPTPlanGetResponse> getDummyChatGPTPlanList() {
         List<ChatGPTPlanGetResponse> chatGPTPlanList = new ArrayList<>();
 
-        Iterator<String[]> trvlIt = travelListCpy.iterator();
-        Iterator<String[]> rstrIt = restaurantListCpy.iterator();
-//        Iterator<String[]> accmIt = accommodationListCpy.iterator();
-        int day = 1;
+        // content 객체 가져오기
+        JSONObject content = JSONOBJECT.getJSONObject("content");
 
-        // (총 날짜 수 / 3) 만큼 for문으로 반복
-        chatGPTPlanList.add(
+        String city = content.getString("travel_city");
+        DAYS = content.getInt("travel_days");
+
+        // attraction_list에서 각 요소의 name과 detail 값을 배열로 받기
+        JSONArray attractionList = content.getJSONArray("attraction_list");
+        List<String> attractionNames = new ArrayList<>();
+        List<String> attractionDetails = new ArrayList<>();
+        for (int i = 0; i < attractionList.length(); i++) {
+            JSONObject attraction = attractionList.getJSONObject(i);
+            attractionNames.add(attraction.getString("name"));
+            attractionDetails.add(attraction.getString("detail"));
+        }
+        System.out.println("Attractions: " + attractionNames);
+        System.out.println("Attraction Details: " + attractionDetails);
+
+        // restaurant_list에서 각 요소의 name과 detail 값을 배열로 받기
+        JSONArray restaurantList = content.getJSONArray("restaurant_list");
+        List<String> restaurantNames = new ArrayList<>();
+        List<String> restaurantDetails = new ArrayList<>();
+        for (int i = 0; i < restaurantList.length(); i++) {
+            JSONObject restaurant = restaurantList.getJSONObject(i);
+            restaurantNames.add(restaurant.getString("name"));
+            restaurantDetails.add(restaurant.getString("detail"));
+        }
+        System.out.println("Restaurants: " + restaurantNames);
+        System.out.println("Restaurant Details: " + restaurantDetails);
+
+        ChatGPTPlan chatGPTPlan = new ChatGPTPlan();
+
+        Iterator<String> attrNmIt = attractionNames.iterator();
+        Iterator<String> attrDtIt = attractionDetails.iterator();
+        Iterator<String> restNmIt = restaurantNames.iterator();
+        Iterator<String> restDtIt = restaurantDetails.iterator();
+
+        for (int i = 0; i < DAYS; i++) {
+            chatGPTPlanList.add(
                     ChatGPTPlanGetResponse.builder()
-                            .day("Day" + (day++))
-                            .travel_destination_1(trvlIt.next()[0])
-                            .travel_destination_2(trvlIt.next()[0])
-                            .travel_destination_3(trvlIt.next()[0])
-                            .restaurant_1(rstrIt.next()[0])
-                            .restaurant_2(rstrIt.next()[0])
-                            .restaurant_3(rstrIt.next()[0])
+                            .city(city)
+                            .day("Day" + (i + 1))
+                            .travel_destination_1(attrNmIt.next())
+                            .travel_destination_1_detail(attrDtIt.next())
+                            .travel_destination_2(attrNmIt.next())
+                            .travel_destination_2_detail(attrDtIt.next())
+                            .travel_destination_3(attrNmIt.next())
+                            .travel_destination_3_detail(attrDtIt.next())
+                            .restaurant_1(restNmIt.next())
+                            .restaurant_1_detail(restDtIt.next())
+                            .restaurant_2(restNmIt.next())
+                            .restaurant_2_detail(restDtIt.next())
+                            .restaurant_3(restNmIt.next())
+                            .restaurant_3_detail(restDtIt.next())
                             .build()
-        );
+            );
+        }
 
-        chatGPTPlanList.add(
-                ChatGPTPlanGetResponse.builder()
-                        .day("Day 1")
-                        .travel_destination_1("Eiffel Tower")
-                        .travel_destination_2("Louvre Museum")
-                        .travel_destination_3("Notre Dame Cathedral")
-                        .restaurant_1("Le Jules Verne")
-                        .restaurant_2("Cafe de Flore")
-                        .restaurant_3("Le Comptoir du Relais")
-                        .build()
-        );
-        chatGPTPlanList.add(
-                ChatGPTPlanGetResponse.builder()
-                        .day("Day 2")
-                        .travel_destination_1("Buckingham Palace")
-                        .travel_destination_2("Tower of London")
-                        .travel_destination_3("British Museum")
-                        .restaurant_1("The Ledbury")
-                        .restaurant_2("Dishoom")
-                        .restaurant_3("Sketch")
-                        .build()
-        );
-        chatGPTPlanList.add(
-                ChatGPTPlanGetResponse.builder()
-                        .day("Day 3")
-                        .travel_destination_1("Statue of Liberty")
-                        .travel_destination_2("Central Park")
-                        .travel_destination_3("Times Square")
-                        .restaurant_1("Eleven Madison Park")
-                        .restaurant_2("Joe's Pizza")
-                        .restaurant_3("Katz's Delicatessen")
-                        .build()
-        );
-
+        System.out.println("chatGPTPlanList : " + chatGPTPlanList);
 
         return chatGPTPlanList;
     }
