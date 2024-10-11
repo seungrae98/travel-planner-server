@@ -57,7 +57,7 @@ chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 
 browser = webdriver.Chrome(options=chrome_options)
-browser.minimize_window()
+browser.maximize_window()
 
 # booking.com 접속
 url = 'https://www.booking.com/'
@@ -76,6 +76,8 @@ browser.find_element(By.NAME, 'ss').send_keys(dest)  # 목적지 입력
 WebDriverWait(browser, 5).until(EC.invisibility_of_element_located((By.XPATH, '//div[text() = "주변 인기 여행지"]')))
 WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'd7430561e2')))
 browser.find_element(By.CLASS_NAME, 'd7430561e2').click()  # 가장 첫 번째 검색 결과 클릭
+
+browser.minimize_window()
 
 # 날짜 선택
 checkin_date = sys.argv[2]
