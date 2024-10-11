@@ -20,4 +20,5 @@ public class FlightData {
     private String rtn_arv_apt;
     private String rtn_time;
     private String price;
+    private String url;
 }
