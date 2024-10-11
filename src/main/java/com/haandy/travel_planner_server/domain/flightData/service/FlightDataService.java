@@ -1,6 +1,7 @@
 package com.haandy.travel_planner_server.domain.flightData.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.haandy.travel_planner_server.domain.FileWatcher;
 import com.haandy.travel_planner_server.domain.flightData.dto.response.FlightDataGetResponse;
 import com.haandy.travel_planner_server.domain.flightData.data.FlightDataWrapper;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,9 @@ public class FlightDataService {
             String start_date,
             String end_date
     ) {
+        // 기존 json 파일 삭제
+        FileWatcher fileWatcher = new FileWatcher("src/main/resources/flights.json", 30000, 1000);
+        fileWatcher.deleteFileIfExists();
         try {
             // 파이썬 실행 명령어 및 스크립트 경로 설정
             String pythonPath = "travel_planner_env/bin/python"; // Python 실행 파일 경로
@@ -57,16 +61,21 @@ public class FlightDataService {
         }
 
         // 그 이후 json 파일 읽기
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("flights.json");
-            FlightDataWrapper flightDataWrapper = objectMapper.readValue(inputStream, FlightDataWrapper.class);
-
-            return flightDataWrapper.getFlights().stream()
-                    .map(FlightDataGetResponse::from)
-                    .collect(Collectors.toList());
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        boolean fileCreated = fileWatcher.waitForFile(); // json 파일이 생성될 때까지 대기
+        if (fileCreated) {
+            System.out.println("File created");
+            // FileInputStream으로 JSON 파일을 읽음
+            try (InputStream inputStream = new FileInputStream("src/main/resources/flights.json")) {
+                FlightDataWrapper flightDataWrapper = objectMapper.readValue(inputStream, FlightDataWrapper.class);
+                return flightDataWrapper.getFlights().stream()
+                        .map(FlightDataGetResponse::from)
+                        .collect(Collectors.toList());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return List.of();
+            }
+        } else {
+            System.out.println("파일이 생성되지 않았습니다.");
             return List.of();
         }
     }
