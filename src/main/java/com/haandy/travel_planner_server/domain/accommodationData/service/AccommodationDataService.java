@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haandy.travel_planner_server.domain.FileWatcher;
 import com.haandy.travel_planner_server.domain.accommodationData.dto.response.AccommodationDataGetResponse;
 import com.haandy.travel_planner_server.domain.accommodationData.data.AccommodationDataWrapper;
-import com.haandy.travel_planner_server.domain.flightData.data.FlightDataWrapper;
-import com.haandy.travel_planner_server.domain.flightData.dto.response.FlightDataGetResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
