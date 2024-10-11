@@ -59,12 +59,14 @@ public class AccommodationDataService {
             e.printStackTrace();
         }
 
+
         // 그 이후 json 파일 읽기
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("accommodation.json");
-            AccommodationDataWrapper flightDataWrapper = objectMapper.readValue(inputStream, AccommodationDataWrapper.class);
+            System.out.println(inputStream);
+            AccommodationDataWrapper accommodationDataWrapper = objectMapper.readValue(inputStream, AccommodationDataWrapper.class);
 
-            return flightDataWrapper.getAccommodationDataList().stream()
+            return accommodationDataWrapper.getAccommodation().stream()
                     .map(AccommodationDataGetResponse::from)
                     .collect(Collectors.toList());
 

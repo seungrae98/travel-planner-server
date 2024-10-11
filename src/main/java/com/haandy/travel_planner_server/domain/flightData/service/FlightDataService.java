@@ -63,9 +63,10 @@ public class FlightDataService {
         // 그 이후 json 파일 읽기
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("flights.json");
+            System.out.println(inputStream);
             FlightDataWrapper flightDataWrapper = objectMapper.readValue(inputStream, FlightDataWrapper.class);
 
-            return flightDataWrapper.getPopular_flights().stream()
+            return flightDataWrapper.getFlights().stream()
                     .map(FlightDataGetResponse::from)
                     .collect(Collectors.toList());
 

@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 public class AccommodationDataWrapper {
     // Getter & Setter
-    private List<AccommodationData> accommodationDataList;
+    private List<AccommodationData> accommodation;
 
 }
