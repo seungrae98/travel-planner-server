@@ -53,7 +53,7 @@ public class AccommodationDataService {
 
             // 프로세스 종료 코드 확인
             int exitCode = process.waitFor();
-            System.out.println("Exit Code: " + exitCode);
+            System.out.println("Exit Code: " + exitCode); // Exit Code: 0 -> 정상
 
         } catch (Exception e) {
             e.printStackTrace();
