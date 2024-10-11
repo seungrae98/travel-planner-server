@@ -6,12 +6,9 @@ import com.haandy.travel_planner_server.domain.flightData.data.FlightDataWrapper
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 @Service
 @RequiredArgsConstructor
@@ -59,11 +56,9 @@ public class FlightDataService {
             e.printStackTrace();
         }
 
-
         // 그 이후 json 파일 읽기
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("flights.json");
-            System.out.println(inputStream);
             FlightDataWrapper flightDataWrapper = objectMapper.readValue(inputStream, FlightDataWrapper.class);
 
             return flightDataWrapper.getFlights().stream()

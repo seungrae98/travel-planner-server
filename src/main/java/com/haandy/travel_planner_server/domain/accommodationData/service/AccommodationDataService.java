@@ -6,10 +6,7 @@ import com.haandy.travel_planner_server.domain.accommodationData.data.Accommodat
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +21,6 @@ public class AccommodationDataService {
             String start_date,
             String end_date
     ) {
-
         try {
             // 파이썬 실행 명령어 및 스크립트 경로 설정
             String pythonPath = "travel_planner_env/bin/python"; // Python 실행 파일 경로
@@ -59,11 +55,9 @@ public class AccommodationDataService {
             e.printStackTrace();
         }
 
-
         // 그 이후 json 파일 읽기
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("accommodation.json");
-            System.out.println(inputStream);
             AccommodationDataWrapper accommodationDataWrapper = objectMapper.readValue(inputStream, AccommodationDataWrapper.class);
 
             return accommodationDataWrapper.getAccommodation().stream()
