@@ -147,6 +147,6 @@ for item in items:
 
 browser.quit()
 
-json_file = 'src/resources/accommodation.json'
+json_file = 'src/main/resources/accommodation.json'
 with open(json_file, 'w', encoding='utf-8') as f:
     json.dump(accommodation_dict, f, indent=4, ensure_ascii=False)
