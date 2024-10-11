@@ -12,7 +12,7 @@ chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 
 browser = webdriver.Chrome(options=chrome_options)
-browser.maximize_window()
+browser.minimize_window()
 
 # 네이버 항공권 접속
 url = 'https://flight.naver.com/'

@@ -57,7 +57,7 @@ chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 
 browser = webdriver.Chrome(options=chrome_options)
-browser.maximize_window()
+browser.minimize_window()
 
 # booking.com 접속
 url = 'https://www.booking.com/'
