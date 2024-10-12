@@ -85,7 +85,7 @@ public class ChatGPTService {
 
     // ChatGPT와의 통신을 통해 메시지 결과를 받아옴
     public String getChatGPTResponse(String message) throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder("python3", "python/chatgpt.py", message);
+        ProcessBuilder processBuilder = new ProcessBuilder("travel_planner_venv/bin/python", "python/chatgpt.py", message);
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
 
