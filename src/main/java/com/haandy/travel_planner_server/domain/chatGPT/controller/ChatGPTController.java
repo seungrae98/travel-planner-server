@@ -7,19 +7,15 @@ import com.haandy.travel_planner_server.domain.chatGPT.dto.response.ChatGPTRespo
 import com.haandy.travel_planner_server.domain.chatGPT.service.ChatGPTService;
 import io.swagger.v3.oas.annotations.Operation;
 
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/chatgpt")
 @CrossOrigin(origins = "http://localhost:3000")
-//@RequiredArgsConstructor
 public class ChatGPTController {
 
     private final ChatGPTService chatGPTService;
@@ -36,11 +32,15 @@ public class ChatGPTController {
         String tmp = chatGPTService.processChatGPT(message);
 
         System.out.println("/*** chatGPTService.categorizeChatGPT(tmp); ***/");
-        chatGPTService.categorizeChatGPT(tmp);
+        int category = chatGPTService.categorizeChatGPT(tmp);
 
-        System.out.println("/*** chatGPTService.getChatGPTPlanList(\"1\"); ***/");
-        chatGPTService.getChatGPTPlanList("1");
-
+        if (category == 1) {
+            System.out.println("/*** chatGPTService.getChatGPTPlanList(\"1\"); ***/");
+            chatGPTService.getChatGPTPlanList("1");
+        } else {
+            String re = chatGPTService.chatGPTResponse();
+            System.out.println(re);
+        }
         return "";
     }
 
