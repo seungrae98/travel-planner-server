@@ -29,18 +29,29 @@ public class ChatGPTController {
     @GetMapping("/chat")
     public String chat(@RequestParam String message) {
         System.out.println("/*** chatGPTService.processChatGPT(message); ***/");
+        long beforeTime = System.currentTimeMillis(); // 코드 실행 전
         String tmp = chatGPTService.processChatGPT(message);
 
         System.out.println("/*** chatGPTService.categorizeChatGPT(tmp); ***/");
         int category = chatGPTService.categorizeChatGPT(tmp);
 
+        // temp
+        // ChatGPTRequestGetRequest msg = new ChatGPTRequestGetRequest("1", message);
+
         if (category == 1) {
             System.out.println("/*** chatGPTService.getChatGPTPlanList(\"1\"); ***/");
             chatGPTService.getChatGPTPlanList("1");
+        } else if (category == 2) {
+            chatGPTService.changePlaceNameList();
+        } else if (category == 3) {
+            chatGPTService.getChatGPTResponseId("1");
         } else {
             String re = chatGPTService.chatGPTResponse();
             System.out.println(re);
         }
+
+        long afterTime = System.currentTimeMillis(); // 코드 실행 후
+        System.out.println((afterTime - beforeTime)/1000);
         return "";
     }
 

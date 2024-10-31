@@ -24,6 +24,7 @@ public class ChatGPTService {
     private String RESPONSE; // ChatGPT 응답
     private JSONObject JSONOBJECT; // cleaned JSON
     private int REQUESTID = 1;
+    private List<String> placeNameList = new ArrayList<>();
 
     // 사용자 문장에 우리 서비스 탬플릿 붙여서 chatGPT에 입력
     public String processChatGPT(String message) {
@@ -39,16 +40,18 @@ public class ChatGPTService {
                       { “category”, “response_message”, “content” }
                       이며 아래 요구사항에 맞게 출력해
                     
-                      category: 사용자 문장의 목적이 아래 카테고리 중 어디에 해당하는지 분석하여 번호 만을 출력해
-                      1. 여행 계획 추천
-                      2. 여행 일정 변경
+                      category: 사용자 문장의 목적이 아래 카테고리 중 어디에 해당하는지 분석하여 번호 만을 출력해.
+                      1. 새로운 여행 계획 생성 (여행 도시와 여행 날짜가 필수 포함되어야 해당 카테고리로 분류)
+                      2. 기존 여행 일정 변경
                       3. 여행지 정보 검색
                       4. 일정 간 경로 검색
-                      5. 해당 없음
+                      5. 여행 관련이 아닌 질문
                     
                       response_message: 사용자 문장에 대한 챗지피티 답변. 그것이 만약
                       1번 카테고리일 경우: 여행도시와 여행날짜 정보가 명확하지 않다면 다시 물어보고, 명확하다면 사용자 문장에 맞는 챗지피티 답변을 출력해.
-                      5번 카테고리일 경우: 너의 역할을 설명하고, 여행 계획과 관련된 질문을 해달라고 출력해.
+                      2번 카테고리일 경우 : 새로운 추천 여행지 장소는 현재 계획된 여행지 장소에 포함되지 않은 장소를 제시해야해.
+                      3번 카테고리일 경우 : 여행지 정보에 관한 상세한 내용을 20자 이상 작성해줘.
+                      5번 카테고리일 경우: 너의 역할을 설명하고, 여행과 관련된 질문을 해달라고 출력해.
                     
                       content: 카테고리에 따라 아래 형식에 맞춰 키값을 하위에 출력해.
                       1번 카테고리일 경우:
@@ -67,11 +70,23 @@ public class ChatGPTService {
                       time: 추천 방문 시간(HH:mm),
                       detail: 추천이유 혹은 장소 설명
                       }
-                      (attraction과 restaurant는 반드시 각 일차별로 하루에 3개씩 추천해.)
-                    
-                      2, 3, 4, 5번 카테고리일 경우 값은 0이야.
+                      (attraction과 restaurant는 반드시 각 일차별로 하루에 3개씩 추천해주고 식사 시간은 아침 식사, 점심 식사, 저녁 식사 시간대로 추천해)
+                      
+                      2번 카테고리일 경우:
+                      {
+                      previous_name: 변경을 희망하는 장소명
+                      name: 장소 이름,
+                      detail: 추천이유 혹은 장소 설명
+                      }
+                      
+                      3, 4, 5번 카테고리일 경우 값은 0이야.
                     
                     """;
+
+            if (!placeNameList.isEmpty()) {
+                prefix += "현재까지 계획된 여행지 장소 목록은 " + String.join(", ", placeNameList) + " 야";
+                System.out.println(String.join(", ", placeNameList));
+            }
 
             message = prefix + '\n' + message + suffix;
             RESPONSE = getChatGPTResponse(message);
@@ -119,7 +134,7 @@ public class ChatGPTService {
 
     // response_message 반환. categorizeChatGPT 까지 함수 실행된 상태에서만 호출해야 정상기능.
     public String chatGPTResponse() {
-        System.out.println("response_message 출력: ");
+        System.out.print("response_message 출력: ");
         return JSONOBJECT.getString("response_message");
     }
 
@@ -131,6 +146,7 @@ public class ChatGPTService {
          * request.requestContent:  사용자 요청
          */
         int category = 1;
+        String response = "", city = "", startDt = "", endDt = "";
 
         try {
             String requestId_string = request.requestId();
@@ -138,22 +154,28 @@ public class ChatGPTService {
 
             processChatGPT(request.requestContent());
             category = categorizeChatGPT(RESPONSE);
+            response = JSONOBJECT.getString("response_message");
+            // System.out.println("\n\nresponse : " + response);
+            city = JSONOBJECT.getJSONObject("content").getString("travel_city");
+            // System.out.println("\n\ncity : " + city);
+            startDt = JSONOBJECT.getJSONObject("content").getString("travel_start_date");
+            // System.out.println("\n\nstartDt : " + startDt);
+            endDt = JSONOBJECT.getJSONObject("content").getString("travel_end_date");
+            // System.out.println("\n\nendDt : " + endDt);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error occurred: " + e.getMessage());
         }
 
-        return new ChatGPTRequestGetResponse(REQUESTID, category, "Response from chatGPT");
+        return new ChatGPTRequestGetResponse(REQUESTID, category, city, startDt, endDt, response);
     }
 
     public ChatGPTResponseGetResponse getChatGPTResponseId(String requestId) {
         /*
-         * TODO: GPT 응답(계획 외 정보) 가져오기
+         * TODO: GPT 응답(계획 외 정보) 가져오기 (완)
          *
          * requestId: 요청 번호
          */
-        // request (ChatGPTRequestGetRequest) id 및 content 저장하고 있어야 할 무언가 필요
-
         return new ChatGPTResponseGetResponse(chatGPTResponse());
     }
 
@@ -194,6 +216,7 @@ public class ChatGPTService {
             System.out.println("Attractions: " + attractionNames);
             System.out.println("Attractions Time: " + attractionTimes);
             System.out.println("Attraction Details: " + attractionDetails);
+            placeNameList = attractionNames;
 
             // restaurant_list에서 각 요소의 name과 detail 값을 배열로 받기
             JSONArray restaurantList = content.getJSONArray("restaurant_list");
@@ -253,5 +276,15 @@ public class ChatGPTService {
         }
 
         return chatGPTPlanList;
+    }
+
+    public String changePlaceNameList() {
+        String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
+        String after = JSONOBJECT.getJSONObject("content").getString("name");
+
+        int bfIdx = placeNameList.indexOf(before);
+        placeNameList.set(bfIdx, after);
+
+        return String.join(", ", placeNameList);
     }
 }

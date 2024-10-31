@@ -6,13 +6,19 @@ import lombok.Builder;
 @Builder
 public record ChatGPTRequestGetResponse(
         Number requestId,
-        Number answerCode,
+        Number answerCode, // category
+        String responseCity,
+        String responseStartDt,
+        String responseEndDt,
         String responseContent
 ) {
     public static ChatGPTRequestGetResponse from(ChatGPTRequest chatGPTRequest) {
         return ChatGPTRequestGetResponse.builder()
                 .requestId(chatGPTRequest.getResponseId())
                 .answerCode(chatGPTRequest.getAnswerCode())
+                .responseCity(chatGPTRequest.getResponseCity())
+                .responseStartDt(chatGPTRequest.getResponseStartDt())
+                .responseEndDt(chatGPTRequest.getResponseEndDt())
                 .responseContent(chatGPTRequest.getResponseContent())
                 .build();
     }
