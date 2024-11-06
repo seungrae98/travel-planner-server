@@ -8,10 +8,10 @@ import json
 import sys
 
 chrome_options = Options()
+chrome_options.add_argument("headless")
 chrome_options.add_experimental_option("detach", True)
 
 browser = webdriver.Chrome(options=chrome_options)
-browser.maximize_window()
 
 # Google 지도 접속
 url = 'https://www.google.co.kr/maps/'
