@@ -1,44 +1,44 @@
 {
     "accommodation": [
         {
-            "photo": "https://cf.bstatic.com/xdata/images/hotel/square600/4199588.webp?k=d9ef90976d9ed158ccc3a8e8035d1a79ace92d701d596a81383bd67059933e1d&o=",
-            "name": "메트로 플라자 호텔(Metro Plaza Hotel)",
-            "location": "다운타운, 로스앤젤레스",
-            "rate": "7.1",
-            "price": "₩1,426,599",
-            "url": "https://www.booking.com/hotel/us/metro-plaza.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4Aoq3pbgGwAIB0gIkODk0ZjY1MWQtOGZiNi00OGJiLWE2NTYtZTI1YWM3YWU0Mzk02AIF4AIB&sid=44bd047c8d43f39ec412f9e92d5e45f7&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=4&hapos=4&sr_order=popularity&srpvid=30b1788918e3055b&srepoch=1728666519&all_sr_blocks=5637601_345285450_2_0_0&highlighted_blocks=5637601_345285450_2_0_0&matching_block_id=5637601_345285450_2_0_0&sr_pri_blocks=5637601_345285450_2_0_0__105651&from=searchresults"
-        },
-        {
-            "photo": "https://cf.bstatic.com/xdata/images/hotel/square600/198601772.webp?k=8d5cf8f6604eea2b562913e51326dda8e2fb9d7abba397aabfaf4e140ad6cba3&o=",
-            "name": "미야코 호텔 로스앤젤레스(Miyako Hotel Los Angeles)",
-            "location": "다운타운, 로스앤젤레스",
-            "rate": "8.6",
-            "price": "₩2,377,868",
-            "url": "https://www.booking.com/hotel/us/miyako-los-angeles.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4Aoq3pbgGwAIB0gIkODk0ZjY1MWQtOGZiNi00OGJiLWE2NTYtZTI1YWM3YWU0Mzk02AIF4AIB&sid=44bd047c8d43f39ec412f9e92d5e45f7&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=5&hapos=5&sr_order=popularity&srpvid=30b1788918e3055b&srepoch=1728666519&all_sr_blocks=5931701_338000752_2_0_0&highlighted_blocks=5931701_338000752_2_0_0&matching_block_id=5931701_338000752_2_0_0&sr_pri_blocks=5931701_338000752_2_0_0__176100&from=searchresults"
-        },
-        {
-            "photo": "https://cf.bstatic.com/xdata/images/hotel/square600/76761252.webp?k=6397f90de26b16a0cfe887bb2ccf145fd5bd847e51d04ec3364afc8810cd7991&o=",
+            "photo": "https://cf2.bstatic.com/xdata/images/hotel/square600/76761252.webp?k=6397f90de26b16a0cfe887bb2ccf145fd5bd847e51d04ec3364afc8810cd7991&o=",
             "name": "HI 로스앤젤레스 - 산타 모니카 호스텔(HI Los Angeles - Santa Monica Hostel)",
             "location": "산타모니카, 로스앤젤레스",
             "rate": "8.6",
-            "price": "₩509,061",
-            "url": "https://www.booking.com/hotel/us/hostelling-international.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4Aoq3pbgGwAIB0gIkODk0ZjY1MWQtOGZiNi00OGJiLWE2NTYtZTI1YWM3YWU0Mzk02AIF4AIB&sid=44bd047c8d43f39ec412f9e92d5e45f7&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=8&hapos=8&sr_order=popularity&srpvid=30b1788918e3055b&srepoch=1728666519&all_sr_blocks=5669023_131695509_0_1_0&highlighted_blocks=5669023_131695509_0_1_0&matching_block_id=5669023_131695509_0_1_0&sr_pri_blocks=5669023_131695509_0_1_0__37700&from_sustainable_property_sr=1&from=searchresults"
+            "price": "₩519,754",
+            "url": "https://www.booking.com/hotel/us/hostelling-international.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4AvjPrrkGwAIB0gIkMWUyMGZiZWQtNGVlOC00NzhiLTllMGItMDFjZmIxZmNmNTBh2AIF4AIB&sid=f23fd0f94c27430c5c8e42eae6cacfc8&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=19&hapos=19&sr_order=popularity&srpvid=229b7b3ed4710499&srepoch=1730914309&all_sr_blocks=5669023_131695509_0_1_0&highlighted_blocks=5669023_131695509_0_1_0&matching_block_id=5669023_131695509_0_1_0&sr_pri_blocks=5669023_131695509_0_1_0__37700&from_sustainable_property_sr=1&from=searchresults"
         },
         {
-            "photo": "https://cf.bstatic.com/xdata/images/hotel/square600/399173136.webp?k=be299f06c9cee7812f74879c73ec0064bbf361a8628a08584794c017ca29d898&o=",
+            "photo": "https://cf2.bstatic.com/xdata/images/hotel/square600/94359457.webp?k=585607443ae6918e3cc8de4474b90e660196e81c5395e8b8b0549bc5debd39ff&o=",
+            "name": "오렌지 드라이브 호스텔 (Orange Drive Hostel)",
+            "location": "할리우드, 로스앤젤레스",
+            "rate": "8.6",
+            "price": "₩496,317",
+            "url": "https://www.booking.com/hotel/us/orange-drive-hostel.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4AvjPrrkGwAIB0gIkMWUyMGZiZWQtNGVlOC00NzhiLTllMGItMDFjZmIxZmNmNTBh2AIF4AIB&sid=f23fd0f94c27430c5c8e42eae6cacfc8&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=24&hapos=24&sr_order=popularity&srpvid=229b7b3ed4710499&srepoch=1730914309&all_sr_blocks=226839002_162080037_1_0_0&highlighted_blocks=226839002_162080037_1_0_0&matching_block_id=226839002_162080037_1_0_0&sr_pri_blocks=226839002_162080037_1_0_0__36000&from=searchresults"
+        },
+        {
+            "photo": "https://cf2.bstatic.com/xdata/images/hotel/square600/198601772.webp?k=8d5cf8f6604eea2b562913e51326dda8e2fb9d7abba397aabfaf4e140ad6cba3&o=",
+            "name": "미야코 호텔 로스앤젤레스(Miyako Hotel Los Angeles)",
+            "location": "다운타운, 로스앤젤레스",
+            "rate": "8.6",
+            "price": "₩2,427,818",
+            "url": "https://www.booking.com/hotel/us/miyako-los-angeles.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4AvjPrrkGwAIB0gIkMWUyMGZiZWQtNGVlOC00NzhiLTllMGItMDFjZmIxZmNmNTBh2AIF4AIB&sid=f23fd0f94c27430c5c8e42eae6cacfc8&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=11&hapos=37&sr_order=popularity&srpvid=229b7b3ed4710499&srepoch=1730914307&all_sr_blocks=5931701_338000752_2_0_0&highlighted_blocks=5931701_338000752_2_0_0&matching_block_id=5931701_338000752_2_0_0&sr_pri_blocks=5931701_338000752_2_0_0__176100&from=searchresults"
+        },
+        {
+            "photo": "https://cf2.bstatic.com/xdata/images/hotel/square600/252222863.webp?k=d704e8396eaba13bbf72987a7e23ce8938978e7f6e870f07a54a2a135b3b8202&o=",
+            "name": "Wilshire Orange Hotel",
+            "location": "미라클 마일, 로스앤젤레스",
+            "rate": "5.3",
+            "price": "₩1,104,305",
+            "url": "https://www.booking.com/hotel/us/wilshire-orange.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4AvjPrrkGwAIB0gIkMWUyMGZiZWQtNGVlOC00NzhiLTllMGItMDFjZmIxZmNmNTBh2AIF4AIB&sid=f23fd0f94c27430c5c8e42eae6cacfc8&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=1&hapos=49&sr_order=popularity&srpvid=229b7b3ed4710499&srepoch=1730914309&all_sr_blocks=38379602_201904501_1_0_0&highlighted_blocks=38379602_201904501_1_0_0&matching_block_id=38379602_201904501_1_0_0&sr_pri_blocks=38379602_201904501_1_0_0__80100&from=searchresults"
+        },
+        {
+            "photo": "https://cf2.bstatic.com/xdata/images/hotel/square600/399173136.webp?k=be299f06c9cee7812f74879c73ec0064bbf361a8628a08584794c017ca29d898&o=",
             "name": "Hollywood Business Suites",
             "location": "할리우드, 로스앤젤레스",
-            "rate": "8.1",
-            "price": "₩1,395,272",
-            "url": "https://www.booking.com/hotel/us/hollywood-business-suites-los-angeles.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4Aoq3pbgGwAIB0gIkODk0ZjY1MWQtOGZiNi00OGJiLWE2NTYtZTI1YWM3YWU0Mzk02AIF4AIB&sid=44bd047c8d43f39ec412f9e92d5e45f7&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=10&hapos=10&sr_order=popularity&srpvid=30b1788918e3055b&srepoch=1728666519&all_sr_blocks=899022301_360609687_2_0_0&highlighted_blocks=899022301_360609687_2_0_0&matching_block_id=899022301_360609687_2_0_0&sr_pri_blocks=899022301_360609687_2_0_0__103331&from=searchresults"
-        },
-        {
-            "photo": "https://cf.bstatic.com/xdata/images/hotel/square600/574135782.webp?k=11a509bd40ef9e179e6ee3ce2fb91921e6ada88993412bf1ac9adad31e382f4b&o=",
-            "name": "Tranquility at the House of Alchemy Hollywood",
-            "location": "할리우드, 로스앤젤레스",
-            "rate": "9.3",
-            "price": "₩1,650,019",
-            "url": "https://www.booking.com/hotel/us/house-of-alchemy-hollywood.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4Aoq3pbgGwAIB0gIkODk0ZjY1MWQtOGZiNi00OGJiLWE2NTYtZTI1YWM3YWU0Mzk02AIF4AIB&sid=44bd047c8d43f39ec412f9e92d5e45f7&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=11&hapos=11&sr_order=popularity&srpvid=30b1788918e3055b&srepoch=1728666519&all_sr_blocks=1071986502_380665397_1_0_0_148507&highlighted_blocks=1071986502_380665397_1_0_0_148507&matching_block_id=1071986502_380665397_1_0_0_148507&sr_pri_blocks=1071986502_380665397_1_0_0_148507_122197&from_sustainable_property_sr=1&from=searchresults"
+            "rate": "8.0",
+            "price": "₩1,437,582",
+            "url": "https://www.booking.com/hotel/us/hollywood-business-suites-los-angeles.ko.html?label=gen173nr-1BCAEoggI46AdIM1gEaH2IAQGYARe4AQfIAQzYAQHoAQGIAgGoAgO4AvjPrrkGwAIB0gIkMWUyMGZiZWQtNGVlOC00NzhiLTllMGItMDFjZmIxZmNmNTBh2AIF4AIB&sid=f23fd0f94c27430c5c8e42eae6cacfc8&aid=304142&ucfs=1&arphpl=1&checkin=2025-03-01&checkout=2025-03-10&dest_id=20014181&dest_type=city&group_adults=1&req_adults=1&no_rooms=1&group_children=0&req_children=0&hpos=3&hapos=51&sr_order=popularity&srpvid=229b7b3ed4710499&srepoch=1730914309&all_sr_blocks=899022301_360609687_2_0_0&highlighted_blocks=899022301_360609687_2_0_0&matching_block_id=899022301_360609687_2_0_0&sr_pri_blocks=899022301_360609687_2_0_0__104274&from=searchresults"
         }
     ]
 }

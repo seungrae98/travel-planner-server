@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-import pyautogui
 import json
 import sys
 
@@ -106,9 +105,8 @@ WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//h1[
 
 # 스크롤 다운
 for i in range(20):
-    pyautogui.press('pagedown')
+    browser.execute_script("window.scrollBy(0, 1000);")
     time.sleep(0.2)
-time.sleep(2)
 
 # beautifulsoup 사용
 html = browser.page_source
