@@ -76,7 +76,7 @@ WebDriverWait(browser, 5).until(EC.invisibility_of_element_located((By.XPATH, '/
 WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'd7430561e2')))
 browser.find_element(By.CLASS_NAME, 'd7430561e2').click()  # 가장 첫 번째 검색 결과 클릭
 
-browser.minimize_window()
+# browser.minimize_window()
 
 # 날짜 선택
 checkin_date = sys.argv[2]
