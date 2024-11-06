@@ -21,12 +21,12 @@ public class PlaceDataService {
             String place
     ) {
         // 기존 json 파일 삭제
-        FileWatcher fileWatcher = new FileWatcher("src/main/resources/flights.json", 30000, 1000);
+        FileWatcher fileWatcher = new FileWatcher("src/main/resources/place_data.json", 30000, 1000);
         fileWatcher.deleteFileIfExists();
         try {
             // 파이썬 실행 명령어 및 스크립트 경로 설정
             String pythonPath = "travel_planner_venv/bin/python"; // Python 실행 파일 경로
-            String scriptPath = "python/info.py"; // Python 스크립트 경로
+            String scriptPath = "python/place_data.py"; // Python 스크립트 경로
 
             // ProcessBuilder에 명령어와 파라미터 추가
             ProcessBuilder processBuilder = new ProcessBuilder(
@@ -62,7 +62,7 @@ public class PlaceDataService {
         if (fileCreated) {
             System.out.println("File created");
             // FileInputStream으로 JSON 파일을 읽음
-            try (InputStream inputStream = new FileInputStream("src/main/resources/flights.json")) {
+            try (InputStream inputStream = new FileInputStream("src/main/resources/place_data.json")) {
                 PlaceDataWrapper flightDataWrapper = objectMapper.readValue(inputStream, PlaceDataWrapper.class);
                 return flightDataWrapper.getPlace().stream()
                         .map(PlaceDataGetResponse::from)
