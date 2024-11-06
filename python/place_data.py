@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import json
+import sys
 
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
@@ -16,7 +17,7 @@ browser.maximize_window()
 url = 'https://www.google.co.kr/maps/'
 browser.get(url)
 
-location = '에펠탑 프랑스 파리'  # 장소명 + 국가 + 도시
+location = sys.argv[1]  # 장소명 + 국가 + 도시
 
 browser.find_element(By.TAG_NAME, 'input').send_keys(location)
 WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@data-index="0"]')))  # 검색 결과 첫 번째 요소 기다리기
@@ -34,7 +35,6 @@ try:
     name = name_kor + '(' + name_eng + ')'
 except:
     name = name_kor
-print(name)
 
 # beautifulsoup 사용
 html = browser.page_source
@@ -44,7 +44,6 @@ try:
     address = soup.find('div', class_='rogA2c').find('div').text
 except:
     address = '-'
-print(address)
 
 try:
     opening_hours = soup.find('div', class_='t39EBf GUrTXd').attrs['aria-label'].split('.')[0]
@@ -75,19 +74,16 @@ def get_sort_key(hour_info):
 # 영업 시간 정렬
 sorted_hours = sorted(hours_list, key=get_sort_key)
 opening_hours = sorted_hours
-print(opening_hours)
 
 try:
     admission_fee = soup.find('div', class_='drwWxc').text
 except:
     admission_fee = '-'
-print(admission_fee)
 
 try:
     web_site = soup.find('a', {'data-tooltip': '웹사이트 열기'}).attrs['href']
 except:
     web_site = '-'
-print(web_site)
 
 photo = []
 # 사진이 있다면 클릭
@@ -114,7 +110,6 @@ if len(photo) < 4:
     cnt = 4 - len(photo)
     for i in range(cnt):
         photo.append('-')
-print(photo)
 
 browser.quit()
 
