@@ -2,8 +2,8 @@ package com.haandy.travel_planner_server.domain.placeData.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haandy.travel_planner_server.domain.FileWatcher;
+import com.haandy.travel_planner_server.domain.placeData.data.PlaceData;
 import com.haandy.travel_planner_server.domain.placeData.dto.response.PlaceDataGetResponse;
-import com.haandy.travel_planner_server.domain.placeData.data.PlaceDataWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,8 +63,12 @@ public class PlaceDataService {
             System.out.println("File created");
             // FileInputStream으로 JSON 파일을 읽음
             try (InputStream inputStream = new FileInputStream("src/main/resources/place_data.json")) {
-                PlaceDataWrapper placeDataWrapper = objectMapper.readValue(inputStream, PlaceDataWrapper.class);
-                return placeDataWrapper.getPlace().stream()
+                // JSON 파일에서 List<PlaceData>로 매핑
+                List<PlaceData> placeDataList = objectMapper.readValue(inputStream,
+                        objectMapper.getTypeFactory().constructCollectionType(List.class, PlaceData.class));
+
+                // placeDataList를 List<PlaceDataGetResponse>로 매핑
+                return placeDataList.stream()
                         .map(PlaceDataGetResponse::from)
                         .collect(Collectors.toList());
             } catch (IOException e) {
