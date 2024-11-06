@@ -124,6 +124,6 @@ place_data = [
     }
 ]
 
-json_file = 'place_data.json'
+json_file = 'src/main/resources/place_data.json'
 with open(json_file, 'w', encoding='utf-8') as f:
     json.dump(place_data, f, indent=4, ensure_ascii=False)
