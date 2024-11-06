@@ -10,7 +10,7 @@ public record PlaceDataGetResponse(
         String address,
         String[] open_hours,
         String admission_fee,
-        String admission_url
+        String web_site
 ) {
     public static PlaceDataGetResponse from(PlaceData placeData) {
         return PlaceDataGetResponse.builder()
@@ -19,7 +19,7 @@ public record PlaceDataGetResponse(
                 .address(placeData.getAddress())
                 .open_hours(placeData.getOpen_hours())
                 .admission_fee(placeData.getAdmission_fee())
-                .admission_url(placeData.getAdmission_url())
+                .web_site(placeData.getWeb_site())
                 .build();
     }
 }

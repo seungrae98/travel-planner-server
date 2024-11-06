@@ -11,5 +11,5 @@ public class PlaceData {
     private String address;
     private String[] open_hours;
     private String admission_fee;
-    private String admission_url;
+    private String web_site;
 }
