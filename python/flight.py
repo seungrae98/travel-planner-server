@@ -9,10 +9,10 @@ import json
 import sys
 
 chrome_options = Options()
+chrome_options.add_argument("headless")
 chrome_options.add_experimental_option("detach", True)
 
 browser = webdriver.Chrome(options=chrome_options)
-browser.minimize_window()
 
 # 네이버 항공권 접속
 url = 'https://flight.naver.com/'
@@ -24,9 +24,9 @@ browser.find_element(By.XPATH, '//b[text() = "ICN"]').click()
 # 출발지 검색 후 출발지 코드 저장
 org = sys.argv[1]  # 출발 도시 or 공항 코드
 browser.find_element(By.CLASS_NAME, 'autocomplete_input__qbYlb').send_keys(org)  # 출발지 입력
-WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'autocomplete_code__6DiFG')))  # 검색 결과가 뜰 때까지 대기
-org_code = browser.find_element(By.CLASS_NAME, 'autocomplete_code__6DiFG').text  # 첫 번째 검색 결과 텍스트
-browser.find_element(By.CLASS_NAME, 'autocomplete_search_item__8Wqp5').click()
+WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'searchResults_en__zI5JF')))  # 검색 결과가 뜰 때까지 대기
+org_code = browser.find_element(By.CLASS_NAME, 'searchResults_en__zI5JF').text  # 첫 번째 검색 결과 텍스트
+browser.find_element(By.XPATH, "//*[contains(@class, 'searchResults_anchor__OXs_5')]").click()
 
 # 도착(button) 클릭
 browser.find_element(By.XPATH, '//b[text() = "도착"]').click()
@@ -34,8 +34,8 @@ browser.find_element(By.XPATH, '//b[text() = "도착"]').click()
 # 도착지 검색 후 도착지 코드 저장
 dest = sys.argv[2]  # 도착 도시 or 공항 코드
 browser.find_element(By.CLASS_NAME, 'autocomplete_input__qbYlb').send_keys(dest)
-WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'autocomplete_code__6DiFG')))
-dest_code = browser.find_element(By.CLASS_NAME, 'autocomplete_code__6DiFG').text
+WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'searchResults_en__zI5JF')))  # 검색 결과가 뜰 때까지 대기
+dest_code = browser.find_element(By.CLASS_NAME, 'searchResults_en__zI5JF').text
 
 # 출발 및 도착 날짜
 dpt_date = sys.argv[3]

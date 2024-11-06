@@ -13,7 +13,23 @@
             "rtn_arv_time": "17:30",
             "rtn_arv_apt": "ICN",
             "rtn_time": "직항, 13시간 30분",
-            "price": "1,130,600",
+            "price": "1,040,700",
+            "url": "https://flight.naver.com/flights/international/SEL-LAX-20250301/LAX-SEL-20250310?adult=1&fareType=Y"
+        },
+        {
+            "airline": "아시아나항공",
+            "airline_logo": "https://vertical.pstatic.net/vertical/static/flight/airlines/OZ.png",
+            "dpt_dpt_time": "14:40",
+            "dpt_dpt_apt": "ICN",
+            "dpt_arv_time": "08:40",
+            "dpt_arv_apt": "LAX",
+            "dpt_time": "직항, 11시간 00분",
+            "rtn_dpt_time": "23:00",
+            "rtn_dpt_apt": "LAX",
+            "rtn_arv_time": "04:20",
+            "rtn_arv_apt": "ICN",
+            "rtn_time": "직항, 13시간 20분",
+            "price": "1,040,700",
             "url": "https://flight.naver.com/flights/international/SEL-LAX-20250301/LAX-SEL-20250310?adult=1&fareType=Y"
         },
         {
@@ -29,7 +45,7 @@
             "rtn_arv_time": "16:10",
             "rtn_arv_apt": "ICN",
             "rtn_time": "직항, 13시간 20분",
-            "price": "995,900",
+            "price": "998,800",
             "url": "https://flight.naver.com/flights/international/SEL-LAX-20250301/LAX-SEL-20250310?adult=1&fareType=Y"
         },
         {
@@ -45,12 +61,12 @@
             "rtn_arv_time": "04:50",
             "rtn_arv_apt": "ICN",
             "rtn_time": "직항, 13시간 10분",
-            "price": "1,089,900",
+            "price": "1,238,800",
             "url": "https://flight.naver.com/flights/international/SEL-LAX-20250301/LAX-SEL-20250310?adult=1&fareType=Y"
         },
         {
-            "airline": "델타 항공",
-            "airline_logo": "https://vertical.pstatic.net/vertical/static/flight/airlines/DL.png",
+            "airline": "대한항공",
+            "airline_logo": "https://vertical.pstatic.net/vertical/static/flight/airlines/KE.png",
             "dpt_dpt_time": "19:40",
             "dpt_dpt_apt": "ICN",
             "dpt_arv_time": "13:40",
@@ -61,23 +77,7 @@
             "rtn_arv_time": "04:50",
             "rtn_arv_apt": "ICN",
             "rtn_time": "직항, 13시간 10분",
-            "price": "1,097,600",
-            "url": "https://flight.naver.com/flights/international/SEL-LAX-20250301/LAX-SEL-20250310?adult=1&fareType=Y"
-        },
-        {
-            "airline": "델타 항공",
-            "airline_logo": "https://vertical.pstatic.net/vertical/static/flight/airlines/DL.png",
-            "dpt_dpt_time": "19:40",
-            "dpt_dpt_apt": "ICN",
-            "dpt_arv_time": "13:40",
-            "dpt_arv_apt": "LAX",
-            "dpt_time": "직항, 11시간 00분",
-            "rtn_dpt_time": "23:40",
-            "rtn_dpt_apt": "LAX",
-            "rtn_arv_time": "04:50",
-            "rtn_arv_apt": "ICN",
-            "rtn_time": "직항, 13시간 10분",
-            "price": "1,120,600",
+            "price": "1,238,800",
             "url": "https://flight.naver.com/flights/international/SEL-LAX-20250301/LAX-SEL-20250310?adult=1&fareType=Y"
         }
     ]
