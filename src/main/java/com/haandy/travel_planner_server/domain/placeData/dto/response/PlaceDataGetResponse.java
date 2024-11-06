@@ -7,19 +7,19 @@ import lombok.Builder;
 public record PlaceDataGetResponse(
         String name,
         String[] photo,
-        String post_address,
-        String[] open_time,
-        String price,
-        String url_link
+        String address,
+        String[] open_hours,
+        String admission_fee,
+        String admission_url
 ) {
     public static PlaceDataGetResponse from(PlaceData placeData) {
         return PlaceDataGetResponse.builder()
                 .name(placeData.getName())
                 .photo(placeData.getPhoto())
-                .post_address(placeData.getPost_address())
-                .open_time(placeData.getOpen_time())
-                .price(placeData.getPrice())
-                .url_link(placeData.getUrl_link())
+                .address(placeData.getAddress())
+                .open_hours(placeData.getOpen_hours())
+                .admission_fee(placeData.getAdmission_fee())
+                .admission_url(placeData.getAdmission_url())
                 .build();
     }
 }
