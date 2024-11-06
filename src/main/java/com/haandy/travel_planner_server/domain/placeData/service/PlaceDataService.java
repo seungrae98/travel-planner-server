@@ -63,8 +63,8 @@ public class PlaceDataService {
             System.out.println("File created");
             // FileInputStream으로 JSON 파일을 읽음
             try (InputStream inputStream = new FileInputStream("src/main/resources/place_data.json")) {
-                PlaceDataWrapper flightDataWrapper = objectMapper.readValue(inputStream, PlaceDataWrapper.class);
-                return flightDataWrapper.getPlace().stream()
+                PlaceDataWrapper placeDataWrapper = objectMapper.readValue(inputStream, PlaceDataWrapper.class);
+                return placeDataWrapper.getPlace().stream()
                         .map(PlaceDataGetResponse::from)
                         .collect(Collectors.toList());
             } catch (IOException e) {
