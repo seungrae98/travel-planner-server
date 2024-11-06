@@ -13,8 +13,8 @@ public class PlaceData {
     private String[] photo;
     private String address;
 
-    @JsonProperty("open_hours")
-    private String[] open_hours;
+    @JsonProperty("opening_hours")
+    private String[] opening_hours;
     private String admission_fee;
     private String web_site;
 }

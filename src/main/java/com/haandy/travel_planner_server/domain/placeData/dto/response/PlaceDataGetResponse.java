@@ -8,7 +8,7 @@ public record PlaceDataGetResponse(
         String name,
         String[] photo,
         String address,
-        String[] open_hours,
+        String[] opening_hours,
         String admission_fee,
         String web_site
 ) {
@@ -17,7 +17,7 @@ public record PlaceDataGetResponse(
                 .name(placeData.getName())
                 .photo(placeData.getPhoto())
                 .address(placeData.getAddress())
-                .open_hours(placeData.getOpen_hours())
+                .opening_hours(placeData.getOpening_hours())
                 .admission_fee(placeData.getAdmission_fee())
                 .web_site(placeData.getWeb_site())
                 .build();
