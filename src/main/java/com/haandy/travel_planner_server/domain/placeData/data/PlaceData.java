@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class PlaceData {
     private String name;
+    private String[] photo;
     private String post_address;
     private String[] open_time;
     private String price;

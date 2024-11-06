@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record PlaceDataGetResponse(
         String name,
+        String[] photo,
         String post_address,
         String[] open_time,
         String price,
@@ -14,6 +15,7 @@ public record PlaceDataGetResponse(
     public static PlaceDataGetResponse from(PlaceData placeData) {
         return PlaceDataGetResponse.builder()
                 .name(placeData.getName())
+                .photo(placeData.getPhoto())
                 .post_address(placeData.getPost_address())
                 .open_time(placeData.getOpen_time())
                 .price(placeData.getPrice())
