@@ -9,7 +9,9 @@ public record PlaceDataGetResponse(
         String[] photo,
         String address,
         String[] opening_hours,
+        String admission_provider,
         String admission_fee,
+        String admission_url,
         String web_site
 ) {
     public static PlaceDataGetResponse from(PlaceData placeData) {
@@ -18,7 +20,9 @@ public record PlaceDataGetResponse(
                 .photo(placeData.getPhoto())
                 .address(placeData.getAddress())
                 .opening_hours(placeData.getOpening_hours())
+                .admission_provider(placeData.getAdmission_provider())
                 .admission_fee(placeData.getAdmission_fee())
+                .admission_url(placeData.getAdmission_url())
                 .web_site(placeData.getWeb_site())
                 .build();
     }

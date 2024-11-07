@@ -75,10 +75,20 @@ def get_sort_key(hour_info):
 sorted_hours = sorted(hours_list, key=get_sort_key)
 opening_hours = sorted_hours
 
+# try:
+#     admission_fee = soup.find('div', class_='drwWxc').text
+# except:
+#     admission_fee = '-'
 try:
-    admission_fee = soup.find('div', class_='drwWxc').text
+    admission = soup.find('div', class_='NKJo9')
+    admission_provider = admission.find('span', class_='tQLcee Vxnq8').text
+    admission_fee = admission.find('div', class_='drwWxc').text
+    admission_url = admission.find('a', class_='Sv1XLe fontTitleSmall').attrs['href']
 except:
+    admission_provider = '-'
     admission_fee = '-'
+    admission_url = '-'
+
 
 try:
     web_site = soup.find('a', {'data-tooltip': '웹사이트 열기'}).attrs['href']
@@ -119,7 +129,9 @@ place_data = [
         'photo': photo,
         'address': address,
         'opening_hours': opening_hours,
+        'admission_provider': admission_provider,
         'admission_fee': admission_fee,
+        'admission_url': admission_url,
         'web_site': web_site,
     }
 ]

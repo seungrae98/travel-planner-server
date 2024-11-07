@@ -15,6 +15,8 @@ public class PlaceData {
 
     @JsonProperty("opening_hours")
     private String[] opening_hours;
+    private String admission_provider;
     private String admission_fee;
+    private String admission_url;
     private String web_site;
 }

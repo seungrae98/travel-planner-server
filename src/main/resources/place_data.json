@@ -17,7 +17,9 @@
             "금요일,오전 9:00~오전 12:00",
             "토요일,오전 9:00~오전 12:00"
         ],
-        "admission_fee": "₩21,340",
+        "admission_provider": "에펠탑",
+        "admission_fee": "₩21,285",
+        "admission_url": "https://www.toureiffel.paris/en/rates-offers/ticket-second-floor-stairs?utm_source=magpietravelgttd",
         "web_site": "https://www.toureiffel.paris/fr"
     }
 ]
