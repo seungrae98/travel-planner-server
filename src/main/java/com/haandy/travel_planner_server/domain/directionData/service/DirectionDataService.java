@@ -64,7 +64,7 @@ public class DirectionDataService {
         if (fileCreated) {
             System.out.println("File created");
             try (InputStream inputStream = new FileInputStream("src/main/resources/direction.json")) {
-                // JSON 데이터를 DirectionData 객체로 매핑
+                // JSON 데이터를 DirectionData 객체로 매핑 (단일 객체로 변경)
                 DirectionData directionData = objectMapper.readValue(inputStream, DirectionData.class);
 
                 // directionData를 List<DirectionDataGetResponse>로 변환하여 반환
