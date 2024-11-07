@@ -2,12 +2,13 @@ package com.haandy.travel_planner_server.domain.directionData.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haandy.travel_planner_server.domain.FileWatcher;
+import com.haandy.travel_planner_server.domain.directionData.data.DirectionData;
 import com.haandy.travel_planner_server.domain.directionData.dto.response.DirectionDataGetResponse;
-import com.haandy.travel_planner_server.domain.directionData.data.DirectionDataWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class DirectionDataService {
             // 프로세스 실행
             Process process = processBuilder.start();
 
-            //실행 결과를 출력하기 위해 InputStream 사용
+            // 실행 결과를 출력하기 위해 InputStream 사용
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
@@ -59,15 +60,18 @@ public class DirectionDataService {
         }
 
         // 그 이후 json 파일 읽기
-        boolean fileCreated = fileWatcher.waitForFile(); // json 파일이 생성될 때까지 대기
+        boolean fileCreated = fileWatcher.waitForFile();
         if (fileCreated) {
             System.out.println("File created");
-            // FileInputStream으로 JSON 파일을 읽음
             try (InputStream inputStream = new FileInputStream("src/main/resources/direction.json")) {
-                DirectionDataWrapper directionDataWrapper = objectMapper.readValue(inputStream, DirectionDataWrapper.class);
-                return directionDataWrapper.getDirections().stream()
-                        .map(DirectionDataGetResponse::from)
-                        .collect(Collectors.toList());
+                // JSON 데이터를 DirectionData 객체로 매핑
+                DirectionData directionData = objectMapper.readValue(inputStream, DirectionData.class);
+
+                // directionData를 List<DirectionDataGetResponse>로 변환하여 반환
+                List<DirectionDataGetResponse> responseList = new ArrayList<>();
+                responseList.add(DirectionDataGetResponse.from(directionData));
+
+                return responseList;
             } catch (IOException e) {
                 e.printStackTrace();
                 return List.of();

@@ -19,7 +19,7 @@ public class DirectionDataController {
     private final DirectionDataService directionDataService;
 
     @GetMapping("/data")
-    @Operation(summary = "항공권 정보 조회하기")
+    @Operation(summary = "경로 정보 조회하기")
     public ResponseEntity<List<DirectionDataGetResponse>> getDirectionData(
             @RequestParam(value = "origin", defaultValue = "후쿠오카 공항") String origin,
             @RequestParam(value = "destination", defaultValue = "이치란 본점") String destination

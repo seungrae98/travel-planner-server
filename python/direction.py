@@ -75,12 +75,10 @@ print(time)
 
 browser.quit()
 
-direction_data = [
-    {
-        'direction': direction,
-        'time': time
-    }
-]
+direction_data = {
+    'direction': direction,
+    'time': time
+}
 
 json_file = 'src/main/resources/direction.json'
 with open(json_file, 'w', encoding='utf-8') as f:
