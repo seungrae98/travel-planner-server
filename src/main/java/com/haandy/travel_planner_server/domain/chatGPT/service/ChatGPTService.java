@@ -23,6 +23,7 @@ public class ChatGPTService {
     private int DAYS;
     private String RESPONSE; // ChatGPT 응답
     private JSONObject JSONOBJECT; // cleaned JSON
+    private List<ChatGPTPlanGetResponse> chatGPTPlanListCpy;
     private int REQUESTID = 1;
     private List<String> placeNameList = new ArrayList<>();
 
@@ -195,7 +196,6 @@ public class ChatGPTService {
         try {
             JSONOBJECT.getJSONObject("content");
 
-
             // content 객체 가져오기
             JSONObject content = JSONOBJECT.getJSONObject("content");
 
@@ -265,9 +265,12 @@ public class ChatGPTService {
                                 .restaurant_3_detail(restDtIt.next())
                                 .build()
                 );
+
+                chatGPTPlanListCpy = chatGPTPlanList;
             }
 
-            System.out.println("chatGPTPlanList : " + chatGPTPlanList);
+//            System.out.println("chatGPTPlanList : " + chatGPTPlanList);
+            System.out.println("chatGPTPlanList : " + chatGPTPlanListCpy);
 
         } catch (JSONException e) {
             System.out.println("정확하지 않은 JSON 반환");
@@ -275,16 +278,115 @@ public class ChatGPTService {
             return null;
         }
 
-        return chatGPTPlanList;
+//        return chatGPTPlanList;
+        return chatGPTPlanListCpy;
     }
+
+//    public String changePlaceNameList() {
+//        String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
+//        String after = JSONOBJECT.getJSONObject("content").getString("name");
+//        String detail = JSONOBJECT.getJSONObject("content").getString("detail");
+//
+//        int bfIdx = placeNameList.indexOf(before);
+//        placeNameList.set(bfIdx, after);
+//
+//        return String.join(", ", placeNameList);
+//    }
 
     public String changePlaceNameList() {
         String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
         String after = JSONOBJECT.getJSONObject("content").getString("name");
+        String detail = JSONOBJECT.getJSONObject("content").getString("detail");
 
         int bfIdx = placeNameList.indexOf(before);
-        placeNameList.set(bfIdx, after);
+        if (bfIdx != -1) {
+            placeNameList.set(bfIdx, after);
+        }
+
+        List<ChatGPTPlanGetResponse> updatedPlanList = new ArrayList<>();
+        for (ChatGPTPlanGetResponse plan : chatGPTPlanListCpy) {
+            ChatGPTPlanGetResponse updatedPlan = plan;
+
+            // 각 필드를 조건에 따라 새롭게 교체된 인스턴스를 만듦
+            if (plan.travel_destination_1().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        after,
+                        plan.travel_destination_1_time(),
+                        detail,
+                        plan.travel_destination_2(),
+                        plan.travel_destination_2_time(),
+                        plan.travel_destination_2_detail(),
+                        plan.travel_destination_3(),
+                        plan.travel_destination_3_time(),
+                        plan.travel_destination_3_detail(),
+                        plan.restaurant_1(),
+                        plan.restaurant_1_time(),
+                        plan.restaurant_1_detail(),
+                        plan.restaurant_2(),
+                        plan.restaurant_2_time(),
+                        plan.restaurant_2_detail(),
+                        plan.restaurant_3(),
+                        plan.restaurant_3_time(),
+                        plan.restaurant_3_detail()
+                );
+            } else if (plan.travel_destination_2().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        plan.travel_destination_1(),
+                        plan.travel_destination_1_time(),
+                        plan.travel_destination_1_detail(),
+                        after,
+                        plan.travel_destination_2_time(),
+                        detail,
+                        plan.travel_destination_3(),
+                        plan.travel_destination_3_time(),
+                        plan.travel_destination_3_detail(),
+                        plan.restaurant_1(),
+                        plan.restaurant_1_time(),
+                        plan.restaurant_1_detail(),
+                        plan.restaurant_2(),
+                        plan.restaurant_2_time(),
+                        plan.restaurant_2_detail(),
+                        plan.restaurant_3(),
+                        plan.restaurant_3_time(),
+                        plan.restaurant_3_detail()
+                );
+            } else if (plan.travel_destination_3().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        plan.travel_destination_1(),
+                        plan.travel_destination_1_time(),
+                        plan.travel_destination_1_detail(),
+                        plan.travel_destination_2(),
+                        plan.travel_destination_2_time(),
+                        plan.travel_destination_2_detail(),
+                        after,
+                        plan.travel_destination_3_time(),
+                        detail,
+                        plan.restaurant_1(),
+                        plan.restaurant_1_time(),
+                        plan.restaurant_1_detail(),
+                        plan.restaurant_2(),
+                        plan.restaurant_2_time(),
+                        plan.restaurant_2_detail(),
+                        plan.restaurant_3(),
+                        plan.restaurant_3_time(),
+                        plan.restaurant_3_detail()
+                );
+            }
+            updatedPlanList.add(updatedPlan);
+        }
+
+        chatGPTPlanListCpy = updatedPlanList;
+
+        System.out.println("chatGPTPlanListCpy : " + chatGPTPlanListCpy);
 
         return String.join(", ", placeNameList);
     }
+
+
 }
