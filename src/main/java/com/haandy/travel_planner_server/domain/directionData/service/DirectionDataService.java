@@ -8,9 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +15,7 @@ public class DirectionDataService {
 
     final ObjectMapper objectMapper;
 
-    public List<DirectionDataGetResponse> getDirectionDataList(
+    public DirectionDataGetResponse getDirectionData(
             String origin,
             String destination
     ) {
@@ -67,18 +64,14 @@ public class DirectionDataService {
                 // JSON 데이터를 DirectionData 객체로 매핑 (단일 객체로 변경)
                 DirectionData directionData = objectMapper.readValue(inputStream, DirectionData.class);
 
-                // directionData를 List<DirectionDataGetResponse>로 변환하여 반환
-                List<DirectionDataGetResponse> responseList = new ArrayList<>();
-                responseList.add(DirectionDataGetResponse.from(directionData));
-
-                return responseList;
+                return DirectionDataGetResponse.from(directionData);
             } catch (IOException e) {
                 e.printStackTrace();
-                return List.of();
+                return null;
             }
         } else {
             System.out.println("파일이 생성되지 않았습니다.");
-            return List.of();
+            return null;
         }
     }
 }

@@ -123,18 +123,16 @@ if len(photo) < 4:
 
 browser.quit()
 
-place_data = [
-    {
-        'name': name,
-        'photo': photo,
-        'address': address,
-        'opening_hours': opening_hours,
-        'admission_provider': admission_provider,
-        'admission_fee': admission_fee,
-        'admission_url': admission_url,
-        'web_site': web_site,
-    }
-]
+place_data = {
+    'name': name,
+    'photo': photo,
+    'address': address,
+    'opening_hours': opening_hours,
+    'admission_provider': admission_provider,
+    'admission_fee': admission_fee,
+    'admission_url': admission_url,
+    'web_site': web_site,
+}
 
 json_file = 'src/main/resources/place_data.json'
 with open(json_file, 'w', encoding='utf-8') as f:

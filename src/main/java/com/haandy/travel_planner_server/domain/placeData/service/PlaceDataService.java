@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +15,7 @@ public class PlaceDataService {
 
     final ObjectMapper objectMapper;
 
-    public List<PlaceDataGetResponse> getPlaceDataList(
+    public PlaceDataGetResponse getPlaceData(
             String place
     ) {
         // 기존 json 파일 삭제
@@ -63,21 +61,17 @@ public class PlaceDataService {
             System.out.println("File created");
             // FileInputStream으로 JSON 파일을 읽음
             try (InputStream inputStream = new FileInputStream("src/main/resources/place_data.json")) {
-                // JSON 파일에서 List<PlaceData>로 매핑
-                List<PlaceData> placeDataList = objectMapper.readValue(inputStream,
-                        objectMapper.getTypeFactory().constructCollectionType(List.class, PlaceData.class));
+                // JSON 데이터를 DirectionData 객체로 매핑 (단일 객체로 변경)
+                PlaceData placeData = objectMapper.readValue(inputStream, PlaceData.class);
 
-                // placeDataList를 List<PlaceDataGetResponse>로 매핑
-                return placeDataList.stream()
-                        .map(PlaceDataGetResponse::from)
-                        .collect(Collectors.toList());
+                return PlaceDataGetResponse.from(placeData);
             } catch (IOException e) {
                 e.printStackTrace();
-                return List.of();
+                return null;
             }
         } else {
             System.out.println("파일이 생성되지 않았습니다.");
-            return List.of();
+            return null;
         }
     }
 }

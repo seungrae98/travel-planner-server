@@ -20,12 +20,12 @@ public class DirectionDataController {
 
     @GetMapping("/data")
     @Operation(summary = "경로 정보 조회하기")
-    public ResponseEntity<List<DirectionDataGetResponse>> getDirectionData(
+    public ResponseEntity<DirectionDataGetResponse> getDirectionData(
             @RequestParam(value = "origin", defaultValue = "후쿠오카 공항") String origin,
             @RequestParam(value = "destination", defaultValue = "이치란 본점") String destination
     ) {
         System.out.println("origin: " + origin);
         System.out.println("destination: " + destination);
-        return ResponseEntity.ok(directionDataService.getDirectionDataList(origin, destination));
+        return ResponseEntity.ok(directionDataService.getDirectionData(origin, destination));
     }
 }

@@ -20,11 +20,11 @@ public class PlaceDataController {
 
     @GetMapping("/data")
     @Operation(summary = "여행지 상세 정보 조회하기")
-    public ResponseEntity<List<PlaceDataGetResponse>> getPlaceData(
+    public ResponseEntity<PlaceDataGetResponse> getPlaceData(
             @RequestParam(value = "place", defaultValue = "에펠탑 프랑스 파리") String place
 
     ) {
         System.out.println("place: " + place);
-        return ResponseEntity.ok(placeDataService.getPlaceDataList(place));
+        return ResponseEntity.ok(placeDataService.getPlaceData(place));
     }
 }
