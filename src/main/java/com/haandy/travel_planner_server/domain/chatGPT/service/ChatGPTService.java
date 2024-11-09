@@ -23,8 +23,12 @@ public class ChatGPTService {
     private int DAYS;
     private String RESPONSE; // ChatGPT 응답
     private JSONObject JSONOBJECT; // cleaned JSON
+    private List<ChatGPTPlanGetResponse> chatGPTPlanListCpy;
     private int REQUESTID = 1;
     private List<String> placeNameList = new ArrayList<>();
+    private List<String> restaurantNameList = new ArrayList<>();
+    private int CATEGORY;
+    private String city = "", startDt = "", endDt = "";
 
     // 사용자 문장에 우리 서비스 탬플릿 붙여서 chatGPT에 입력
     public String processChatGPT(String message) {
@@ -49,7 +53,7 @@ public class ChatGPTService {
                     
                       response_message: 사용자 문장에 대한 챗지피티 답변. 그것이 만약
                       1번 카테고리일 경우: 여행도시와 여행날짜 정보가 명확하지 않다면 다시 물어보고, 명확하다면 사용자 문장에 맞는 챗지피티 답변을 출력해.
-                      2번 카테고리일 경우 : 새로운 추천 여행지 장소는 현재 계획된 여행지 장소에 포함되지 않은 장소를 제시해야해.
+                      2번 카테고리일 경우 : 새로운 추천 장소는 현재 계획된 여행지 장소 목록과 음식점 목록에 포함되지 않은 장소를 제시해야해. (여행도시 혹은 날짜가 변경되면 카테고리 1번에 해당)
                       3번 카테고리일 경우 : 여행지 정보에 관한 상세한 내용을 20자 이상 작성해줘.
                       5번 카테고리일 경우: 너의 역할을 설명하고, 여행과 관련된 질문을 해달라고 출력해.
                     
@@ -84,8 +88,11 @@ public class ChatGPTService {
                     """;
 
             if (!placeNameList.isEmpty()) {
-                prefix += "현재까지 계획된 여행지 장소 목록은 " + String.join(", ", placeNameList) + " 야";
-                System.out.println(String.join(", ", placeNameList));
+                prefix += "현재 계획한 여행 도시는 " + city +"이고, 시작날짜: " + startDt + " 종료날짜: " + endDt + " 이며,"
+                        + "현재까지 계획된 여행지 장소 목록은 " + String.join(", ", placeNameList) + " 이고, "
+                        + "음식점 목록은 " + String.join(",", restaurantNameList) + " 야.";
+
+                System.out.println(prefix);
             }
 
             message = prefix + '\n' + message + suffix;
@@ -129,6 +136,8 @@ public class ChatGPTService {
         int category = JSONOBJECT.getInt("category");
         System.out.println("Category: " + category);
 
+        CATEGORY = category;
+
         return category;
     }
 
@@ -138,7 +147,7 @@ public class ChatGPTService {
         return JSONOBJECT.getString("response_message");
     }
 
-    public ChatGPTRequestGetResponse getChatGPTRequest(ChatGPTRequestGetRequest request) { // 몇 번 category?
+    public ChatGPTRequestGetResponse getChatGPTRequest(ChatGPTRequestGetRequest request) {
         /*
          * TODO: GPT에 요청 보내서 요청 타입 분류하기 (완)
          *
@@ -146,7 +155,7 @@ public class ChatGPTService {
          * request.requestContent:  사용자 요청
          */
         int category = 1;
-        String response = "", city = "", startDt = "", endDt = "";
+        String response = "";
 
         try {
             String requestId_string = request.requestId();
@@ -155,17 +164,20 @@ public class ChatGPTService {
             processChatGPT(request.requestContent());
             category = categorizeChatGPT(RESPONSE);
             response = JSONOBJECT.getString("response_message");
-            // System.out.println("\n\nresponse : " + response);
-            city = JSONOBJECT.getJSONObject("content").getString("travel_city");
-            // System.out.println("\n\ncity : " + city);
-            startDt = JSONOBJECT.getJSONObject("content").getString("travel_start_date");
-            // System.out.println("\n\nstartDt : " + startDt);
-            endDt = JSONOBJECT.getJSONObject("content").getString("travel_end_date");
-            // System.out.println("\n\nendDt : " + endDt);
+            if (JSONOBJECT.getJSONObject("content").has("travel_city")) {
+                city = JSONOBJECT.getJSONObject("content").getString("travel_city");
+            }
+            if (JSONOBJECT.getJSONObject("content").has("travel_start_date")) {
+                startDt = JSONOBJECT.getJSONObject("content").getString("travel_start_date");
+            }
+            if (JSONOBJECT.getJSONObject("content").has("travel_end_date")) {
+                endDt = JSONOBJECT.getJSONObject("content").getString("travel_end_date");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error occurred: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
+        System.out.println(city + startDt + endDt);
 
         return new ChatGPTRequestGetResponse(REQUESTID, category, city, startDt, endDt, response);
     }
@@ -185,7 +197,13 @@ public class ChatGPTService {
          *
          * requestId: 요청 번호
          */
-        return getDummyChatGPTPlanList();
+        if (CATEGORY == 1) {
+            return getDummyChatGPTPlanList();
+        }
+        if (CATEGORY == 2) {
+            return changePlaceNameList();
+        }
+        return null;
     }
 
     // 여행 계획 더미 데이터
@@ -194,7 +212,6 @@ public class ChatGPTService {
 
         try {
             JSONOBJECT.getJSONObject("content");
-
 
             // content 객체 가져오기
             JSONObject content = JSONOBJECT.getJSONObject("content");
@@ -232,6 +249,7 @@ public class ChatGPTService {
             System.out.println("Restaurants: " + restaurantNames);
             System.out.println("Restaurants Time: " + restaurantTimes);
             System.out.println("Restaurant Details: " + restaurantDetails);
+            restaurantNameList = restaurantNames;
 
             Iterator<String> attrNmIt = attractionNames.iterator();
             Iterator<String> attrTmIt = attractionTimes.iterator();
@@ -265,9 +283,12 @@ public class ChatGPTService {
                                 .restaurant_3_detail(restDtIt.next())
                                 .build()
                 );
+
+                chatGPTPlanListCpy = chatGPTPlanList;
             }
 
-            System.out.println("chatGPTPlanList : " + chatGPTPlanList);
+//            System.out.println("chatGPTPlanList : " + chatGPTPlanList);
+            System.out.println("chatGPTPlanList : " + chatGPTPlanListCpy);
 
         } catch (JSONException e) {
             System.out.println("정확하지 않은 JSON 반환");
@@ -275,16 +296,186 @@ public class ChatGPTService {
             return null;
         }
 
-        return chatGPTPlanList;
+//        return chatGPTPlanList;
+        return chatGPTPlanListCpy;
     }
 
-    public String changePlaceNameList() {
+//    public String changePlaceNameList() {
+//        String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
+//        String after = JSONOBJECT.getJSONObject("content").getString("name");
+//        String detail = JSONOBJECT.getJSONObject("content").getString("detail");
+//
+//        int bfIdx = placeNameList.indexOf(before);
+//        placeNameList.set(bfIdx, after);
+//
+//        return String.join(", ", placeNameList);
+//    }
+
+    public List<ChatGPTPlanGetResponse> changePlaceNameList() {
         String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
         String after = JSONOBJECT.getJSONObject("content").getString("name");
+        String detail = JSONOBJECT.getJSONObject("content").getString("detail");
 
         int bfIdx = placeNameList.indexOf(before);
-        placeNameList.set(bfIdx, after);
+        if (bfIdx != -1) {
+            placeNameList.set(bfIdx, after);
+        }
 
-        return String.join(", ", placeNameList);
+        List<ChatGPTPlanGetResponse> updatedPlanList = new ArrayList<>();
+        for (ChatGPTPlanGetResponse plan : chatGPTPlanListCpy) {
+            ChatGPTPlanGetResponse updatedPlan = plan;
+
+            // 각 필드를 조건에 따라 새롭게 교체된 인스턴스를 만듦
+            if (plan.travel_destination_1().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        after,
+                        plan.travel_destination_1_time(),
+                        detail,
+                        plan.travel_destination_2(),
+                        plan.travel_destination_2_time(),
+                        plan.travel_destination_2_detail(),
+                        plan.travel_destination_3(),
+                        plan.travel_destination_3_time(),
+                        plan.travel_destination_3_detail(),
+                        plan.restaurant_1(),
+                        plan.restaurant_1_time(),
+                        plan.restaurant_1_detail(),
+                        plan.restaurant_2(),
+                        plan.restaurant_2_time(),
+                        plan.restaurant_2_detail(),
+                        plan.restaurant_3(),
+                        plan.restaurant_3_time(),
+                        plan.restaurant_3_detail()
+                );
+            } else if (plan.travel_destination_2().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        plan.travel_destination_1(),
+                        plan.travel_destination_1_time(),
+                        plan.travel_destination_1_detail(),
+                        after,
+                        plan.travel_destination_2_time(),
+                        detail,
+                        plan.travel_destination_3(),
+                        plan.travel_destination_3_time(),
+                        plan.travel_destination_3_detail(),
+                        plan.restaurant_1(),
+                        plan.restaurant_1_time(),
+                        plan.restaurant_1_detail(),
+                        plan.restaurant_2(),
+                        plan.restaurant_2_time(),
+                        plan.restaurant_2_detail(),
+                        plan.restaurant_3(),
+                        plan.restaurant_3_time(),
+                        plan.restaurant_3_detail()
+                );
+            } else if (plan.travel_destination_3().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        plan.travel_destination_1(),
+                        plan.travel_destination_1_time(),
+                        plan.travel_destination_1_detail(),
+                        plan.travel_destination_2(),
+                        plan.travel_destination_2_time(),
+                        plan.travel_destination_2_detail(),
+                        after,
+                        plan.travel_destination_3_time(),
+                        detail,
+                        plan.restaurant_1(),
+                        plan.restaurant_1_time(),
+                        plan.restaurant_1_detail(),
+                        plan.restaurant_2(),
+                        plan.restaurant_2_time(),
+                        plan.restaurant_2_detail(),
+                        plan.restaurant_3(),
+                        plan.restaurant_3_time(),
+                        plan.restaurant_3_detail()
+                );
+            }
+
+            if (plan.restaurant_1().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        plan.travel_destination_1(),
+                        plan.travel_destination_1_time(),
+                        plan.travel_destination_1_detail(),
+                        plan.travel_destination_2(),
+                        plan.travel_destination_2_time(),
+                        plan.travel_destination_2_detail(),
+                        plan.travel_destination_3(),
+                        plan.travel_destination_3_time(),
+                        plan.travel_destination_3_detail(),
+                        after,
+                        plan.restaurant_1_time(),
+                        detail,
+                        plan.restaurant_2(),
+                        plan.restaurant_2_time(),
+                        plan.restaurant_2_detail(),
+                        plan.restaurant_3(),
+                        plan.restaurant_3_time(),
+                        plan.restaurant_3_detail()
+                );
+            } else if (plan.restaurant_2().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        plan.travel_destination_1(),
+                        plan.travel_destination_1_time(),
+                        plan.travel_destination_1_detail(),
+                        plan.travel_destination_2(),
+                        plan.travel_destination_2_time(),
+                        plan.travel_destination_2_detail(),
+                        plan.travel_destination_3(),
+                        plan.travel_destination_3_time(),
+                        plan.travel_destination_3_detail(),
+                        plan.restaurant_1(),
+                        plan.restaurant_1_time(),
+                        plan.restaurant_1_detail(),
+                        after,
+                        plan.restaurant_2_time(),
+                        detail,
+                        plan.restaurant_3(),
+                        plan.restaurant_3_time(),
+                        plan.restaurant_3_detail()
+                );
+            } else if (plan.restaurant_3().equals(before)) {
+                updatedPlan = new ChatGPTPlanGetResponse(
+                        plan.city(),
+                        plan.day(),
+                        plan.travel_destination_1(),
+                        plan.travel_destination_1_time(),
+                        plan.travel_destination_1_detail(),
+                        plan.travel_destination_2(),
+                        plan.travel_destination_2_time(),
+                        plan.travel_destination_2_detail(),
+                        plan.travel_destination_3(),
+                        plan.travel_destination_3_time(),
+                        plan.travel_destination_3_detail(),
+                        plan.restaurant_1(),
+                        plan.restaurant_1_time(),
+                        plan.restaurant_1_detail(),
+                        plan.restaurant_2(),
+                        plan.restaurant_2_time(),
+                        plan.restaurant_2_detail(),
+                        after,
+                        plan.restaurant_3_time(),
+                        detail
+                );
+            }
+            updatedPlanList.add(updatedPlan);
+        }
+
+        chatGPTPlanListCpy = updatedPlanList;
+
+        System.out.println("chatGPTPlanListCpy : " + chatGPTPlanListCpy);
+
+        return chatGPTPlanListCpy;
     }
+
+
 }
