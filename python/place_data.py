@@ -24,6 +24,20 @@ WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//div
 if browser.find_element(By.XPATH, '//*[@id="cell0x0"]/span[2]/span').text == 'Google 지도에 누락된 장소를 추가합니다.':
     print('존재하지 않는 장소')
     browser.quit()
+    place_data = {
+        'name': '-',
+        'photo': ['-', '-', '-', '-'],
+        'address': '-',
+        'opening_hours': ['-'],
+        'admission_provider': '-',
+        'admission_fee': '-',
+        'admission_url': '-',
+        'web_site': '-'
+    }
+
+    json_file = 'src/main/resources/place_data.json'
+    with open(json_file, 'w', encoding='utf-8') as f:
+        json.dump(place_data, f, indent=4, ensure_ascii=False)
     exit()
 browser.find_element(By.XPATH, '//div[@data-index="0"]').click()
 
