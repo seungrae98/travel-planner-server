@@ -22,7 +22,6 @@ location = sys.argv[1]  # 장소명 + 국가 + 도시
 browser.find_element(By.TAG_NAME, 'input').send_keys(location)
 WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@data-index="0"]')))  # 검색 결과 첫 번째 요소 기다리기
 if browser.find_element(By.XPATH, '//*[@id="cell0x0"]/span[2]/span').text == 'Google 지도에 누락된 장소를 추가합니다.':
-    print('존재하지 않는 장소')
     browser.quit()
     place_data = {
         'name': '-',
@@ -35,9 +34,7 @@ if browser.find_element(By.XPATH, '//*[@id="cell0x0"]/span[2]/span').text == 'Go
         'web_site': '-'
     }
 
-    json_file = 'src/main/resources/place_data.json'
-    with open(json_file, 'w', encoding='utf-8') as f:
-        json.dump(place_data, f, indent=4, ensure_ascii=False)
+    print(json.dumps(place_data))
     exit()
 browser.find_element(By.XPATH, '//div[@data-index="0"]').click()
 
@@ -128,7 +125,7 @@ try:
         photo.append(url)
         i += 1
 except:
-    print('사진이 없습니다.')
+    photo = []
 
 if len(photo) < 4:
     cnt = 4 - len(photo)
@@ -148,6 +145,4 @@ place_data = {
     'web_site': web_site,
 }
 
-json_file = 'src/main/resources/place_data.json'
-with open(json_file, 'w', encoding='utf-8') as f:
-    json.dump(place_data, f, indent=4, ensure_ascii=False)
+print(json.dumps(place_data))

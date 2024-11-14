@@ -18,27 +18,25 @@ public class PlaceDataService {
     public PlaceDataGetResponse getPlaceData(
             String place
     ) {
-        // 기존 json 파일 삭제
-        FileWatcher fileWatcher = new FileWatcher("src/main/resources/place_data.json", 30000, 1000);
-        fileWatcher.deleteFileIfExists();
         try {
-            // 파이썬 실행 명령어 및 스크립트 경로 설정
+            // 파이썬 실행 설정
             String pythonPath = "travel_planner_venv/bin/python"; // Python 실행 파일 경로
             String scriptPath = "python/place_data.py"; // Python 스크립트 경로
 
-            // ProcessBuilder에 명령어와 파라미터 추가
+            // ProcessBuilder 설정
             ProcessBuilder processBuilder = new ProcessBuilder(
                     pythonPath, scriptPath, place
             );
 
-            // 프로세스 실행
+            // 프로세스 시작
             Process process = processBuilder.start();
 
-            //실행 결과를 출력하기 위해 InputStream 사용
+            // 표준 출력을 캡처 (Python 스크립트가 필요한 데이터를 출력한다고 가정)
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder outputBuilder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                outputBuilder.append(line);
             }
 
             // 에러 로그 확인
@@ -49,29 +47,20 @@ public class PlaceDataService {
 
             // 프로세스 종료 코드 확인
             int exitCode = process.waitFor();
-            System.out.println("Exit Code: " + exitCode); // Exit Code: 0 -> 정상
+            System.out.println("Exit Code: " + exitCode); // Exit Code: 0 -> 정상 실행
 
+            if (exitCode == 0) {
+                // 캡처한 출력을 JSON으로 파싱
+                String jsonData = outputBuilder.toString();
+                PlaceData placeData = objectMapper.readValue(jsonData, PlaceData.class);
+
+                return PlaceDataGetResponse.from(placeData);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // 그 이후 json 파일 읽기
-        boolean fileCreated = fileWatcher.waitForFile(); // json 파일이 생성될 때까지 대기
-        if (fileCreated) {
-            System.out.println("File created");
-            // FileInputStream으로 JSON 파일을 읽음
-            try (InputStream inputStream = new FileInputStream("src/main/resources/place_data.json")) {
-                // JSON 데이터를 DirectionData 객체로 매핑 (단일 객체로 변경)
-                PlaceData placeData = objectMapper.readValue(inputStream, PlaceData.class);
-
-                return PlaceDataGetResponse.from(placeData);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            System.out.println("파일이 생성되지 않았습니다.");
-            return null;
-        }
+        // 문제가 발생한 경우 null 반환
+        return null;
     }
 }
