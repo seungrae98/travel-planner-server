@@ -35,7 +35,7 @@ public class ChatGPTService {
         try {
             System.out.println("User Message: \n" + message);
 
-            String prefix = "너는 여행 계획 비서이며, 사용자에게 여행 계획을 짜 줘야 해. 너의 여행 계획을 참고해서 여행을 할 거야. 참고로 올해는 2024년이야.\n";
+            String prefix = "너는 여행 계획 비서이며, 사용자에게 여행 계획을 짜 줘야 해. 너의 여행 계획을 참고해서 여행을 할 거야. 참고로 올해는 2024년이야.\n 사용자 문장은 : ";
             String suffix = """         
                     \n
                       위의 사용자의 문장을 분석해서 JSON 파일 형식으로 출력해.
@@ -67,30 +67,32 @@ public class ChatGPTService {
                       attraction_list: 추천 관광지,
                       restaurant_list: 추천 식당
                       }
-                      단, attraction_list, restaurant_list는 아래에 키값을 배열로 나열해
+                      단, attraction_list, restaurant_list는 아래에 키값을 배열로 나열해.
                       {
                       day: 여행 몇 일차(int),
-                      name: 장소 이름,
+                      name: 장소 이름
                       time: 추천 방문 시간(HH:mm),
-                      detail: 추천이유 혹은 장소 설명
+                      detail: 추천 이유 혹은 장소 설명
                       }
-                      (attraction과 restaurant는 반드시 각 일차별로 하루에 3개씩 추천해주고 식사 시간은 아침 식사, 점심 식사, 저녁 식사 시간대로 추천해)
-                      
+                      (attraction과 restaurant는 반드시 각 날짜별로 하루에 3개씩 추천해주고 식사 시간은 아침 식사, 점심 식사, 저녁 식사 시간대로 추천해.
+                      계획 세울때 각 날짜마다 방문하는 두 장소 사이 거리는 50km 내에 최대한 가까이 위치하도록 추천해.
+                      name 값은 구글맵에 검색 가능한 장소명으로 한글이름(영어이름) 형식으로 알려줘.)
+                    
                       2번 카테고리일 경우:
                       {
                       previous_name: 변경을 희망하는 장소명
                       name: 장소 이름,
                       detail: 추천이유 혹은 장소 설명
                       }
-                      
-                      3, 4, 5번 카테고리일 경우 값은 0이야.
+                    
+                      3, 4, 5번 카테고리일 경우 : { info: 없음 }
                     
                     """;
 
             if (!placeNameList.isEmpty()) {
-                prefix += "현재 계획한 여행 도시는 " + city +"이고, 시작날짜: " + startDt + " 종료날짜: " + endDt + " 이며,"
+                prefix += "현재 계획한 여행 도시는 " + city + "이고, 시작날짜: " + startDt + " 종료날짜: " + endDt + " 이며,"
                         + "현재까지 계획된 여행지 장소 목록은 " + String.join(", ", placeNameList) + " 이고, "
-                        + "음식점 목록은 " + String.join(",", restaurantNameList) + " 야.";
+                        + "음식점 목록은 " + String.join(",", restaurantNameList) + " 야.\n";
 
                 System.out.println(prefix);
             }
@@ -121,6 +123,7 @@ public class ChatGPTService {
             result.append(line);
         }
 
+        System.out.println(result);
         // 응답을 문자열 형태로 반환
         return result.toString();
     }
@@ -197,13 +200,34 @@ public class ChatGPTService {
          *
          * requestId: 요청 번호
          */
-        if (CATEGORY == 1) {
+        // 챗지피티가 카테고리 잘못 분류했을때 , return을 null로 하면 프론트에서 null처리를 다시입력하라고 코딩필요
+        if (CATEGORY == 1 && isCategoryCorrect()) {
             return getDummyChatGPTPlanList();
         }
-        if (CATEGORY == 2) {
+        if (CATEGORY == 2 && isCategoryCorrect()) {
             return changePlaceNameList();
         }
+
         return null;
+    }
+
+    private boolean isCategoryCorrect() {
+        JSONObject content = JSONOBJECT.getJSONObject("content");
+        if (content.getString("travel_city").equals("")) {
+            return false;
+        }
+
+        startDt = content.getString("travel_start_date");
+        if (startDt.equals("yyyy-MM-dd") || startDt.equals("")) {
+            return false;
+        }
+
+        endDt = content.getString("travel_end_date");
+        if (endDt.equals("yyyy-MM-dd") || endDt.equals("")) {
+            return false;
+        }
+
+        return true;
     }
 
     // 여행 계획 더미 데이터
@@ -258,11 +282,13 @@ public class ChatGPTService {
             Iterator<String> restTmIt = restaurantTimes.iterator();
             Iterator<String> restDtIt = restaurantDetails.iterator();
 
-            for (int i = 0; i < DAYS; i++) {
+            int i = 0;
+            while (attrNmIt.hasNext()) {
+                i++;
                 chatGPTPlanList.add(
                         ChatGPTPlanGetResponse.builder()
                                 .city(city)
-                                .day("Day" + (i + 1))
+                                .day("Day" + i)
                                 .travel_destination_1(attrNmIt.next())
                                 .travel_destination_1_time(attrTmIt.next())
                                 .travel_destination_1_detail(attrDtIt.next())
@@ -287,7 +313,6 @@ public class ChatGPTService {
                 chatGPTPlanListCpy = chatGPTPlanList;
             }
 
-//            System.out.println("chatGPTPlanList : " + chatGPTPlanList);
             System.out.println("chatGPTPlanList : " + chatGPTPlanListCpy);
 
         } catch (JSONException e) {
@@ -296,20 +321,8 @@ public class ChatGPTService {
             return null;
         }
 
-//        return chatGPTPlanList;
         return chatGPTPlanListCpy;
     }
-
-//    public String changePlaceNameList() {
-//        String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
-//        String after = JSONOBJECT.getJSONObject("content").getString("name");
-//        String detail = JSONOBJECT.getJSONObject("content").getString("detail");
-//
-//        int bfIdx = placeNameList.indexOf(before);
-//        placeNameList.set(bfIdx, after);
-//
-//        return String.join(", ", placeNameList);
-//    }
 
     public List<ChatGPTPlanGetResponse> changePlaceNameList() {
         String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
@@ -326,7 +339,7 @@ public class ChatGPTService {
             ChatGPTPlanGetResponse updatedPlan = plan;
 
             // 각 필드를 조건에 따라 새롭게 교체된 인스턴스를 만듦
-            if (plan.travel_destination_1().equals(before)) {
+            if (plan.travel_destination_1().trim().contains(before.trim())) {
                 updatedPlan = new ChatGPTPlanGetResponse(
                         plan.city(),
                         plan.day(),
@@ -349,7 +362,7 @@ public class ChatGPTService {
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
-            } else if (plan.travel_destination_2().equals(before)) {
+            } else if (plan.travel_destination_2().trim().contains(before.trim())) {
                 updatedPlan = new ChatGPTPlanGetResponse(
                         plan.city(),
                         plan.day(),
@@ -372,7 +385,7 @@ public class ChatGPTService {
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
-            } else if (plan.travel_destination_3().equals(before)) {
+            } else if (plan.travel_destination_3().trim().contains(before.trim())) {
                 updatedPlan = new ChatGPTPlanGetResponse(
                         plan.city(),
                         plan.day(),
@@ -397,7 +410,7 @@ public class ChatGPTService {
                 );
             }
 
-            if (plan.restaurant_1().equals(before)) {
+            if (plan.restaurant_1().trim().contains(before.trim())) {
                 updatedPlan = new ChatGPTPlanGetResponse(
                         plan.city(),
                         plan.day(),
@@ -420,7 +433,7 @@ public class ChatGPTService {
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
-            } else if (plan.restaurant_2().equals(before)) {
+            } else if (plan.restaurant_2().trim().contains(before.trim())) {
                 updatedPlan = new ChatGPTPlanGetResponse(
                         plan.city(),
                         plan.day(),
@@ -443,7 +456,7 @@ public class ChatGPTService {
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
-            } else if (plan.restaurant_3().equals(before)) {
+            } else if (plan.restaurant_3().trim().contains(before.trim())) {
                 updatedPlan = new ChatGPTPlanGetResponse(
                         plan.city(),
                         plan.day(),
