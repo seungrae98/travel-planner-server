@@ -70,18 +70,20 @@ public class ChatGPTService {
                       단, attraction_list, restaurant_list는 아래에 키값을 배열로 나열해.
                       {
                       day: 여행 몇 일차(int),
-                      name: 장소 이름
+                      name: 구글맵에서 검색 가능한 한글 장소명
+                      local_name: 구글맵에서 검색 가능한 현지 언어 장소명
                       time: 추천 방문 시간(HH:mm),
                       detail: 추천 이유 혹은 장소 설명
                       }
                       (attraction과 restaurant는 반드시 각 날짜별로 하루에 3개씩 추천해주고 식사 시간은 아침 식사, 점심 식사, 저녁 식사 시간대로 추천해.
                       계획 세울때 각 날짜마다 방문하는 두 장소 사이 거리는 50km 내에 최대한 가까이 위치하도록 추천해.
-                      name 값은 구글맵에 검색 가능한 장소명으로 한글이름(영어이름) 형식으로 알려줘.)
+                      모든 장소명은 구글맵map.google.com에서 검색했을 때 정확한 결과가 나오는 장소명 또는 상호명으로 제시해줘야 해.)
                     
                       2번 카테고리일 경우:
                       {
                       previous_name: 변경을 희망하는 장소명
                       name: 장소 이름,
+                      local_name: 장소의 현지 언어 이름
                       detail: 추천이유 혹은 장소 설명
                       }
                     
@@ -176,6 +178,9 @@ public class ChatGPTService {
             if (JSONOBJECT.getJSONObject("content").has("travel_end_date")) {
                 endDt = JSONOBJECT.getJSONObject("content").getString("travel_end_date");
             }
+            if (city.equals("") || startDt.equals("") || endDt.equals("") || startDt.equals("yyyy-MM-dd") || endDt.equals("yyyy-MM-dd")) {
+                category = 5;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -200,7 +205,6 @@ public class ChatGPTService {
          *
          * requestId: 요청 번호
          */
-        // 챗지피티가 카테고리 잘못 분류했을때 , return을 null로 하면 프론트에서 null처리를 다시입력하라고 코딩필요
         if (CATEGORY == 1 && isCategoryCorrect()) {
             return getDummyChatGPTPlanList();
         }
@@ -246,39 +250,48 @@ public class ChatGPTService {
             // attraction_list에서 각 요소의 name, time, detail 값을 배열로 받기
             JSONArray attractionList = content.getJSONArray("attraction_list");
             List<String> attractionNames = new ArrayList<>();
+            List<String> attractionLocalNames = new ArrayList<>();
             List<String> attractionTimes = new ArrayList<>();
             List<String> attractionDetails = new ArrayList<>();
             for (int i = 0; i < attractionList.length(); i++) {
                 JSONObject attraction = attractionList.getJSONObject(i);
                 attractionNames.add(attraction.getString("name"));
+                attractionLocalNames.add(attraction.getString("local_name"));
                 attractionTimes.add(attraction.getString("time"));
                 attractionDetails.add(attraction.getString("detail"));
             }
             System.out.println("Attractions: " + attractionNames);
+            System.out.println("Attractions(Local Name): " + attractionLocalNames);
             System.out.println("Attractions Time: " + attractionTimes);
             System.out.println("Attraction Details: " + attractionDetails);
+
             placeNameList = attractionNames;
 
             // restaurant_list에서 각 요소의 name과 detail 값을 배열로 받기
             JSONArray restaurantList = content.getJSONArray("restaurant_list");
             List<String> restaurantNames = new ArrayList<>();
+            List<String> restaurantLocalNames = new ArrayList<>();
             List<String> restaurantTimes = new ArrayList<>();
             List<String> restaurantDetails = new ArrayList<>();
             for (int i = 0; i < restaurantList.length(); i++) {
                 JSONObject restaurant = restaurantList.getJSONObject(i);
                 restaurantNames.add(restaurant.getString("name"));
+                restaurantLocalNames.add(restaurant.getString("local_name"));
                 restaurantTimes.add(restaurant.getString("time"));
                 restaurantDetails.add(restaurant.getString("detail"));
             }
             System.out.println("Restaurants: " + restaurantNames);
+            System.out.println("Restaurants(Local Name): " + restaurantLocalNames);
             System.out.println("Restaurants Time: " + restaurantTimes);
             System.out.println("Restaurant Details: " + restaurantDetails);
             restaurantNameList = restaurantNames;
 
             Iterator<String> attrNmIt = attractionNames.iterator();
+            Iterator<String> attrLclNmIt = attractionLocalNames.iterator();
             Iterator<String> attrTmIt = attractionTimes.iterator();
             Iterator<String> attrDtIt = attractionDetails.iterator();
             Iterator<String> restNmIt = restaurantNames.iterator();
+            Iterator<String> restLclNmIt = restaurantLocalNames.iterator();
             Iterator<String> restTmIt = restaurantTimes.iterator();
             Iterator<String> restDtIt = restaurantDetails.iterator();
 
@@ -290,21 +303,27 @@ public class ChatGPTService {
                                 .city(city)
                                 .day("Day" + i)
                                 .travel_destination_1(attrNmIt.next())
+                                .travel_destination_1_local(attrLclNmIt.next())
                                 .travel_destination_1_time(attrTmIt.next())
                                 .travel_destination_1_detail(attrDtIt.next())
                                 .travel_destination_2(attrNmIt.next())
+                                .travel_destination_2_local(attrLclNmIt.next())
                                 .travel_destination_2_detail(attrDtIt.next())
                                 .travel_destination_2_time(attrTmIt.next())
                                 .travel_destination_3(attrNmIt.next())
+                                .travel_destination_3_local(attrLclNmIt.next())
                                 .travel_destination_3_time(attrTmIt.next())
                                 .travel_destination_3_detail(attrDtIt.next())
                                 .restaurant_1(restNmIt.next())
+                                .restaurant_1_local(restLclNmIt.next())
                                 .restaurant_1_time(restTmIt.next())
                                 .restaurant_1_detail(restDtIt.next())
                                 .restaurant_2(restNmIt.next())
+                                .restaurant_2_local(restLclNmIt.next())
                                 .restaurant_2_time(restTmIt.next())
                                 .restaurant_2_detail(restDtIt.next())
                                 .restaurant_3(restNmIt.next())
+                                .restaurant_3_local(restLclNmIt.next())
                                 .restaurant_3_time(restTmIt.next())
                                 .restaurant_3_detail(restDtIt.next())
                                 .build()
@@ -327,6 +346,7 @@ public class ChatGPTService {
     public List<ChatGPTPlanGetResponse> changePlaceNameList() {
         String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
         String after = JSONOBJECT.getJSONObject("content").getString("name");
+        String afterLcl = JSONOBJECT.getJSONObject("content").getString("local_name");
         String detail = JSONOBJECT.getJSONObject("content").getString("detail");
 
         int bfIdx = placeNameList.indexOf(before);
@@ -344,21 +364,27 @@ public class ChatGPTService {
                         plan.city(),
                         plan.day(),
                         after,
+                        afterLcl,
                         plan.travel_destination_1_time(),
                         detail,
                         plan.travel_destination_2(),
+                        plan.travel_destination_2_local(),
                         plan.travel_destination_2_time(),
                         plan.travel_destination_2_detail(),
                         plan.travel_destination_3(),
+                        plan.travel_destination_3_local(),
                         plan.travel_destination_3_time(),
                         plan.travel_destination_3_detail(),
                         plan.restaurant_1(),
+                        plan.restaurant_1_local(),
                         plan.restaurant_1_time(),
                         plan.restaurant_1_detail(),
                         plan.restaurant_2(),
+                        plan.restaurant_2_local(),
                         plan.restaurant_2_time(),
                         plan.restaurant_2_detail(),
                         plan.restaurant_3(),
+                        plan.restaurant_3_local(),
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
@@ -367,21 +393,27 @@ public class ChatGPTService {
                         plan.city(),
                         plan.day(),
                         plan.travel_destination_1(),
+                        plan.travel_destination_1_local(),
                         plan.travel_destination_1_time(),
                         plan.travel_destination_1_detail(),
                         after,
+                        afterLcl,
                         plan.travel_destination_2_time(),
                         detail,
                         plan.travel_destination_3(),
+                        plan.travel_destination_3_local(),
                         plan.travel_destination_3_time(),
                         plan.travel_destination_3_detail(),
                         plan.restaurant_1(),
+                        plan.restaurant_1_local(),
                         plan.restaurant_1_time(),
                         plan.restaurant_1_detail(),
                         plan.restaurant_2(),
+                        plan.restaurant_2_local(),
                         plan.restaurant_2_time(),
                         plan.restaurant_2_detail(),
                         plan.restaurant_3(),
+                        plan.restaurant_3_local(),
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
@@ -390,21 +422,27 @@ public class ChatGPTService {
                         plan.city(),
                         plan.day(),
                         plan.travel_destination_1(),
+                        plan.travel_destination_1_local(),
                         plan.travel_destination_1_time(),
                         plan.travel_destination_1_detail(),
                         plan.travel_destination_2(),
+                        plan.travel_destination_2_local(),
                         plan.travel_destination_2_time(),
                         plan.travel_destination_2_detail(),
                         after,
+                        afterLcl,
                         plan.travel_destination_3_time(),
                         detail,
                         plan.restaurant_1(),
+                        plan.restaurant_1_local(),
                         plan.restaurant_1_time(),
                         plan.restaurant_1_detail(),
                         plan.restaurant_2(),
+                        plan.restaurant_2_local(),
                         plan.restaurant_2_time(),
                         plan.restaurant_2_detail(),
                         plan.restaurant_3(),
+                        plan.restaurant_3_local(),
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
@@ -415,21 +453,27 @@ public class ChatGPTService {
                         plan.city(),
                         plan.day(),
                         plan.travel_destination_1(),
+                        plan.travel_destination_1_local(),
                         plan.travel_destination_1_time(),
                         plan.travel_destination_1_detail(),
                         plan.travel_destination_2(),
+                        plan.travel_destination_2_local(),
                         plan.travel_destination_2_time(),
                         plan.travel_destination_2_detail(),
                         plan.travel_destination_3(),
+                        plan.travel_destination_3_local(),
                         plan.travel_destination_3_time(),
                         plan.travel_destination_3_detail(),
                         after,
+                        afterLcl,
                         plan.restaurant_1_time(),
                         detail,
                         plan.restaurant_2(),
+                        plan.restaurant_2_local(),
                         plan.restaurant_2_time(),
                         plan.restaurant_2_detail(),
                         plan.restaurant_3(),
+                        plan.restaurant_3_local(),
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
@@ -438,21 +482,27 @@ public class ChatGPTService {
                         plan.city(),
                         plan.day(),
                         plan.travel_destination_1(),
+                        plan.travel_destination_1_local(),
                         plan.travel_destination_1_time(),
                         plan.travel_destination_1_detail(),
                         plan.travel_destination_2(),
+                        plan.travel_destination_2_local(),
                         plan.travel_destination_2_time(),
                         plan.travel_destination_2_detail(),
                         plan.travel_destination_3(),
+                        plan.travel_destination_3_local(),
                         plan.travel_destination_3_time(),
                         plan.travel_destination_3_detail(),
                         plan.restaurant_1(),
+                        plan.restaurant_1_local(),
                         plan.restaurant_1_time(),
                         plan.restaurant_1_detail(),
                         after,
+                        afterLcl,
                         plan.restaurant_2_time(),
                         detail,
                         plan.restaurant_3(),
+                        plan.restaurant_3_local(),
                         plan.restaurant_3_time(),
                         plan.restaurant_3_detail()
                 );
@@ -461,21 +511,27 @@ public class ChatGPTService {
                         plan.city(),
                         plan.day(),
                         plan.travel_destination_1(),
+                        plan.travel_destination_1_local(),
                         plan.travel_destination_1_time(),
                         plan.travel_destination_1_detail(),
                         plan.travel_destination_2(),
+                        plan.travel_destination_2_local(),
                         plan.travel_destination_2_time(),
                         plan.travel_destination_2_detail(),
                         plan.travel_destination_3(),
+                        plan.travel_destination_3_local(),
                         plan.travel_destination_3_time(),
                         plan.travel_destination_3_detail(),
                         plan.restaurant_1(),
+                        plan.restaurant_1_local(),
                         plan.restaurant_1_time(),
                         plan.restaurant_1_detail(),
                         plan.restaurant_2(),
+                        plan.restaurant_2_local(),
                         plan.restaurant_2_time(),
                         plan.restaurant_2_detail(),
                         after,
+                        afterLcl,
                         plan.restaurant_3_time(),
                         detail
                 );
