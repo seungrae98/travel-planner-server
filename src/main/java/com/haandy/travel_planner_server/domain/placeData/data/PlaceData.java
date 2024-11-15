@@ -12,6 +12,8 @@ public class PlaceData {
     @JsonProperty("photo")
     private String[] photo;
     private String address;
+    private String latitude;
+    private String longitude;
 
     @JsonProperty("opening_hours")
     private String[] opening_hours;

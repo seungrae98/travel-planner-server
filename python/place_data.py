@@ -27,6 +27,8 @@ if browser.find_element(By.XPATH, '//*[@id="cell0x0"]/span[2]/span').text == 'Go
         'name': '-',
         'photo': ['-', '-', '-', '-'],
         'address': '-',
+        'latitude': '-',
+        'longitude': '-',
         'opening_hours': ['-'],
         'admission_provider': '-',
         'admission_fee': '-',
@@ -86,10 +88,6 @@ def get_sort_key(hour_info):
 sorted_hours = sorted(hours_list, key=get_sort_key)
 opening_hours = sorted_hours
 
-# try:
-#     admission_fee = soup.find('div', class_='drwWxc').text
-# except:
-#     admission_fee = '-'
 try:
     admission = soup.find('div', class_='NKJo9')
     admission_provider = admission.find('span', class_='tQLcee Vxnq8').text
@@ -105,6 +103,11 @@ try:
     web_site = soup.find('a', {'data-tooltip': '웹사이트 열기'}).attrs['href']
 except:
     web_site = '-'
+
+current_url = browser.current_url
+coords = current_url.split("@")[1].split(",")[:2]  # 위도와 경도 추출
+latitude = coords[0]
+longitude = coords[1]
 
 photo = []
 # 사진이 있다면 클릭
@@ -132,12 +135,14 @@ if len(photo) < 4:
     for i in range(cnt):
         photo.append('-')
 
-browser.quit()
+# browser.quit()
 
 place_data = {
     'name': name,
     'photo': photo,
     'address': address,
+    'latitude': latitude,
+    'longitude': longitude,
     'opening_hours': opening_hours,
     'admission_provider': admission_provider,
     'admission_fee': admission_fee,

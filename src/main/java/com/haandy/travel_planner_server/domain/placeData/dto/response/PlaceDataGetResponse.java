@@ -8,6 +8,8 @@ public record PlaceDataGetResponse(
         String name,
         String[] photo,
         String address,
+        String latitude,
+        String longitude,
         String[] opening_hours,
         String admission_provider,
         String admission_fee,
@@ -19,6 +21,8 @@ public record PlaceDataGetResponse(
                 .name(placeData.getName())
                 .photo(placeData.getPhoto())
                 .address(placeData.getAddress())
+                .latitude(placeData.getLatitude())
+                .longitude(placeData.getLongitude())
                 .opening_hours(placeData.getOpening_hours())
                 .admission_provider(placeData.getAdmission_provider())
                 .admission_fee(placeData.getAdmission_fee())
