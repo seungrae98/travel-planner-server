@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,13 +30,15 @@ public class ChatGPTService {
     private List<String> restaurantNameList = new ArrayList<>();
     private int CATEGORY;
     private String city = "", startDt = "", endDt = "";
+    private LocalDate TODAY = LocalDate.now();
 
     // 사용자 문장에 우리 서비스 탬플릿 붙여서 chatGPT에 입력
     public String processChatGPT(String message) {
         try {
             System.out.println("User Message: \n" + message);
 
-            String prefix = "너는 여행 계획 비서이며, 사용자에게 여행 계획을 짜 줘야 해. 너의 여행 계획을 참고해서 여행을 할 거야. 참고로 올해는 2024년이야.\n 사용자 문장은 : ";
+            String prefix = "너는 여행 계획 비서이며, 사용자에게 여행 계획을 짜 줘야 해. 너의 여행 계획을 참고해서 여행을 할 거야. 참고로 오늘은"
+                    + TODAY + "이야. 사용자의 요청 일정에 년도(year) 정보가 없다면 반드시 2025년으로 세팅해줘.\n사용자 문장은 : ";
             String suffix = """         
                     \n
                       위의 사용자의 문장을 분석해서 JSON 파일 형식으로 출력해.
@@ -75,9 +78,10 @@ public class ChatGPTService {
                       time: 추천 방문 시간(HH:mm),
                       detail: 추천 이유 혹은 장소 설명
                       }
-                      (attraction과 restaurant는 반드시 각 날짜별로 하루에 3개씩 추천해주고 식사 시간은 아침 식사, 점심 식사, 저녁 식사 시간대로 추천해.
+                      (attraction과 restaurant는 반드시 각 날짜별로 하루에 3개씩 추천해주고 식사 시간(restaurant_list의 time)은 아침 식사는 09:00, 점심 식사는 13:00, 저녁 식사는 18:00 시간대로 추천해.
+                      만약 각 식사 시간대에 추천해줄 식당이나 추천 장소가 없다면 해당 index의 name과 local_name과 detail은 ""(빈 문자열)로 작성해줘.
                       계획 세울때 각 날짜마다 방문하는 두 장소 사이 거리는 50km 내에 최대한 가까이 위치하도록 추천해.
-                      모든 장소명은 구글맵map.google.com에서 검색했을 때 정확한 결과가 나오는 장소명 또는 상호명으로 제시해줘야 해.)
+                      모든 장소명은 구글맵(maps.google.com)에서 검색했을 때 정확한 결과가 나오는 장소명 또는 상호명으로 제시해줘야 해.)
                     
                       2번 카테고리일 경우:
                       {
@@ -152,6 +156,7 @@ public class ChatGPTService {
         return JSONOBJECT.getString("response_message");
     }
 
+    // 09 12 17 // 09 12 17 // 09 12 17 //
     public ChatGPTRequestGetResponse getChatGPTRequest(ChatGPTRequestGetRequest request) {
         /*
          * TODO: GPT에 요청 보내서 요청 타입 분류하기 (완)
@@ -159,7 +164,6 @@ public class ChatGPTService {
          * request.requestId:       요청 번호
          * request.requestContent:  사용자 요청
          */
-        int category = 1;
         String response = "";
 
         try {
@@ -167,7 +171,8 @@ public class ChatGPTService {
             REQUESTID = Integer.parseInt(requestId_string);
 
             processChatGPT(request.requestContent());
-            category = categorizeChatGPT(RESPONSE);
+            categorizeChatGPT(RESPONSE);
+
             response = JSONOBJECT.getString("response_message");
             if (JSONOBJECT.getJSONObject("content").has("travel_city")) {
                 city = JSONOBJECT.getJSONObject("content").getString("travel_city");
@@ -179,7 +184,7 @@ public class ChatGPTService {
                 endDt = JSONOBJECT.getJSONObject("content").getString("travel_end_date");
             }
             if (city.equals("") || startDt.equals("") || endDt.equals("") || startDt.equals("yyyy-MM-dd") || endDt.equals("yyyy-MM-dd")) {
-                category = 5;
+                CATEGORY = 5;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -187,7 +192,7 @@ public class ChatGPTService {
         }
         System.out.println(city + startDt + endDt);
 
-        return new ChatGPTRequestGetResponse(REQUESTID, category, city, startDt, endDt, response);
+        return new ChatGPTRequestGetResponse(REQUESTID, CATEGORY, city, startDt, endDt, response);
     }
 
     public ChatGPTResponseGetResponse getChatGPTResponseId(String requestId) {
@@ -205,33 +210,14 @@ public class ChatGPTService {
          *
          * requestId: 요청 번호
          */
-        if (CATEGORY == 1 && isCategoryCorrect()) {
+        if (CATEGORY == 1) {
             return getDummyChatGPTPlanList();
         }
-        if (CATEGORY == 2 && isCategoryCorrect()) {
+        if (CATEGORY == 2) {
             return changePlaceNameList();
         }
 
         return null;
-    }
-
-    private boolean isCategoryCorrect() {
-        JSONObject content = JSONOBJECT.getJSONObject("content");
-        if (content.getString("travel_city").equals("")) {
-            return false;
-        }
-
-        startDt = content.getString("travel_start_date");
-        if (startDt.equals("yyyy-MM-dd") || startDt.equals("")) {
-            return false;
-        }
-
-        endDt = content.getString("travel_end_date");
-        if (endDt.equals("yyyy-MM-dd") || endDt.equals("")) {
-            return false;
-        }
-
-        return true;
     }
 
     // 여행 계획 더미 데이터
@@ -285,6 +271,24 @@ public class ChatGPTService {
             System.out.println("Restaurants Time: " + restaurantTimes);
             System.out.println("Restaurant Details: " + restaurantDetails);
             restaurantNameList = restaurantNames;
+
+            if ((DAYS * 3) > restaurantList.length()) {
+                for (int i = 0; i < (DAYS * 3) - restaurantList.length(); i++) {
+                    restaurantNames.add("");
+                    restaurantLocalNames.add("");
+                    restaurantTimes.add("");
+                    restaurantDetails.add("");
+                }
+            }
+
+            if (attractionList.length() < (DAYS * 3)) {
+                for (int i = 0; i < (DAYS * 3) - attractionList.length(); i++) {
+                    attractionNames.add("");
+                    attractionLocalNames.add("");
+                    attractionTimes.add("");
+                    attractionDetails.add("");
+                }
+            }
 
             Iterator<String> attrNmIt = attractionNames.iterator();
             Iterator<String> attrLclNmIt = attractionLocalNames.iterator();
