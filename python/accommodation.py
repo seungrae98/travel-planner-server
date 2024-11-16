@@ -64,7 +64,7 @@ browser.get(url)
 
 # 로그인 혜택 안내 창 닫기
 try:
-    WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'a83ed08757.c21c56c305.f38b6daa18.d691166b09.ab98298258.f4552b6561')))
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'a83ed08757.c21c56c305.f38b6daa18.d691166b09.ab98298258.f4552b6561')))
     browser.find_element(By.CLASS_NAME, 'a83ed08757.c21c56c305.f38b6daa18.d691166b09.ab98298258.f4552b6561').click()
 except:
     print('로그인 혜택 안내 창 없음')
