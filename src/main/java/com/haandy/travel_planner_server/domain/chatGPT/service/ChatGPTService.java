@@ -74,20 +74,21 @@ public class ChatGPTService {
                       {
                       day: 여행 몇 일차(int),
                       name: 구글맵에서 검색 가능한 한글 장소명
-                      local_name: 구글맵에서 검색 가능한 현지 언어 장소명
+                      eng_name: 구글맵에서 검색 가능한 name의 영어 장소명
                       time: 추천 방문 시간(HH:mm),
                       detail: 추천 이유 혹은 장소 설명
                       }
                       (attraction과 restaurant는 반드시 각 날짜별로 하루에 3개씩 추천해주고 식사 시간(restaurant_list의 time)은 아침 식사는 09:00, 점심 식사는 13:00, 저녁 식사는 18:00 시간대로 추천해.
-                      만약 각 식사 시간대에 추천해줄 식당이나 추천 장소가 없다면 해당 index의 name과 local_name과 detail은 ""(빈 문자열)로 작성해줘.
+                      만약 각 식사 시간대에 추천해줄 식당이나 추천 장소가 없다면 해당 index의 name과 eng_name과 detail은 ""(빈 문자열)로 작성해줘.
                       계획 세울때 각 날짜마다 방문하는 두 장소 사이 거리는 50km 내에 최대한 가까이 위치하도록 추천해.
-                      모든 장소명은 구글맵(maps.google.com)에서 검색했을 때 정확한 결과가 나오는 장소명 또는 상호명으로 제시해줘야 해.)
+                      모든 장소명은 구글맵(maps.google.com)에서 검색했을 때 정확한 결과가 나오는 장소명 또는 상호명으로 제시해줘야 해.
+                      만약 프랜차이즈처럼 여행 도시에 여러 곳의 같은 장소명이 존재한다면 반드시 정확한 장소명 또는 상호명을 제시해줘야 해.)
                     
                       2번 카테고리일 경우:
                       {
                       previous_name: 변경을 희망하는 장소명
                       name: 장소 이름,
-                      local_name: 장소의 현지 언어 이름
+                      eng_name: 장소의 영어 이름
                       detail: 추천이유 혹은 장소 설명
                       }
                     
@@ -242,12 +243,12 @@ public class ChatGPTService {
             for (int i = 0; i < attractionList.length(); i++) {
                 JSONObject attraction = attractionList.getJSONObject(i);
                 attractionNames.add(attraction.getString("name"));
-                attractionLocalNames.add(attraction.getString("local_name"));
+                attractionLocalNames.add(attraction.getString("eng_name"));
                 attractionTimes.add(attraction.getString("time"));
                 attractionDetails.add(attraction.getString("detail"));
             }
             System.out.println("Attractions: " + attractionNames);
-            System.out.println("Attractions(Local Name): " + attractionLocalNames);
+            System.out.println("Attractions(Eng Name): " + attractionLocalNames);
             System.out.println("Attractions Time: " + attractionTimes);
             System.out.println("Attraction Details: " + attractionDetails);
 
@@ -262,12 +263,12 @@ public class ChatGPTService {
             for (int i = 0; i < restaurantList.length(); i++) {
                 JSONObject restaurant = restaurantList.getJSONObject(i);
                 restaurantNames.add(restaurant.getString("name"));
-                restaurantLocalNames.add(restaurant.getString("local_name"));
+                restaurantLocalNames.add(restaurant.getString("eng_name"));
                 restaurantTimes.add(restaurant.getString("time"));
                 restaurantDetails.add(restaurant.getString("detail"));
             }
             System.out.println("Restaurants: " + restaurantNames);
-            System.out.println("Restaurants(Local Name): " + restaurantLocalNames);
+            System.out.println("Restaurants(Eng Name): " + restaurantLocalNames);
             System.out.println("Restaurants Time: " + restaurantTimes);
             System.out.println("Restaurant Details: " + restaurantDetails);
             restaurantNameList = restaurantNames;
@@ -350,7 +351,7 @@ public class ChatGPTService {
     public List<ChatGPTPlanGetResponse> changePlaceNameList() {
         String before = JSONOBJECT.getJSONObject("content").getString("previous_name");
         String after = JSONOBJECT.getJSONObject("content").getString("name");
-        String afterLcl = JSONOBJECT.getJSONObject("content").getString("local_name");
+        String afterLcl = JSONOBJECT.getJSONObject("content").getString("eng_name");
         String detail = JSONOBJECT.getJSONObject("content").getString("detail");
 
         int bfIdx = placeNameList.indexOf(before);
