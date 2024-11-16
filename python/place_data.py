@@ -105,9 +105,14 @@ except:
     web_site = '-'
 
 current_url = browser.current_url
-coords = current_url.split("@")[1].split(",")[:2]  # 위도와 경도 추출
-latitude = coords[0]
-longitude = coords[1]
+if '@' in current_url:
+    # URL에서 '@' 뒤에 위치한 좌표 부분을 추출
+    coords = current_url.split("@")[1].split(",")[:2]  # 위도와 경도 추출
+    latitude = coords[0]
+    longitude = coords[1]
+else:
+    latitude = '-'
+    longitude = '-'
 
 photo = []
 # 사진이 있다면 클릭
