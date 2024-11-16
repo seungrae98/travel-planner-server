@@ -19,9 +19,14 @@ browser.get(url)
 
 location = sys.argv[1]  # 장소명 + 국가 + 도시
 
-browser.find_element(By.TAG_NAME, 'input').send_keys(location)
-WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@data-index="0"]')))  # 검색 결과 첫 번째 요소 기다리기
-if browser.find_element(By.XPATH, '//*[@id="cell0x0"]/span[2]/span').text == 'Google 지도에 누락된 장소를 추가합니다.':
+bool_error = 0
+try:
+    browser.find_element(By.TAG_NAME, 'input').send_keys(location)
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//div[@data-index="0"]')))  # 검색 결과 첫 번째 요소 기다리기
+except:
+    bool_error = 1
+
+if browser.find_element(By.XPATH, '//*[@id="cell0x0"]/span[2]/span').text == 'Google 지도에 누락된 장소를 추가합니다.' or bool_error == 1:
     browser.quit()
     place_data = {
         'name': '-',
@@ -41,13 +46,21 @@ if browser.find_element(By.XPATH, '//*[@id="cell0x0"]/span[2]/span').text == 'Go
 browser.find_element(By.XPATH, '//div[@data-index="0"]').click()
 
 # 장소 이름
-WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//h1[@class="DUwDvf lfPIob"]')))  # 장소 이름 기다리기
-name_kor = browser.find_element(By.XPATH, '//h1[@class="DUwDvf lfPIob"]').text
+try:
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//h1[@class="DUwDvf lfPIob"]')))  # 장소 이름 기다리기
+    name_kor = browser.find_element(By.XPATH, '//h1[@class="DUwDvf lfPIob"]').text
+except:
+    name_kor = '-'
+
 try:
     name_eng = browser.find_element(By.XPATH, '//h2[@class="bwoZTb fontBodyMedium"]').text
-    name = name_kor + '(' + name_eng + ')'
 except:
+    name_eng = '-'
+
+if name_eng == '-':
     name = name_kor
+else:
+    name = name_kor + '(' + name_eng + ')'
 
 # beautifulsoup 사용
 html = browser.page_source
@@ -117,9 +130,9 @@ else:
 photo = []
 # 사진이 있다면 클릭
 try:
-    WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]/button')))
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]/button')))
     browser.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]/button').click()
-    WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//a[@href="#"]')))
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//a[@href="#"]')))
     pictures = browser.find_elements(By.XPATH, '//div[@class="U39Pmb"]')
 
     i = 0
