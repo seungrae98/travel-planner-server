@@ -20,7 +20,7 @@ public class PlaceDataService {
     ) {
         try {
             // 파이썬 실행 설정
-            String pythonPath = "travel_planner_venv/bin/python"; // Python 실행 파일 경로
+            String pythonPath = "python3"; // Python 실행 파일 경로
             String scriptPath = "python/place_data.py"; // Python 스크립트 경로
 
             // ProcessBuilder 설정
