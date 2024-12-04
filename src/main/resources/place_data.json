@@ -1,0 +1,23 @@
+{
+    "name": "에펠탑(Tour Eiffel)",
+    "photo": [
+        "https://lh5.googleusercontent.com/p/AF1QipPtFNe7VtF42nnm4Mu0Cm-HlcuXZIE4y7W1CstX=w203-h360-k-no",
+        "https://lh5.googleusercontent.com/p/AF1QipNoR6cVvNmPKWBwxASSmz97OdGUFBGnYXc63e1a=w203-h135-k-no",
+        "https://lh5.googleusercontent.com/p/AF1QipNAu_bkJTIxJjjxW2b1OUP5UG3M-P38HGBNNN7R=w203-h152-k-no",
+        "https://lh5.googleusercontent.com/p/AF1QipO4aK_xbdlxwO_Mqe4bT__gwPHiOK0ynKuQFf3o=w203-h270-k-no"
+    ],
+    "address": "Av. Gustave Eiffel, 75007 Paris, 프랑스",
+    "opening_hours": [
+        "일요일,오전 9:00~오전 12:00",
+        "월요일 (Armistice Day),오전 9:00~오전 12:00,시간이 달라질 수 있음",
+        "화요일,오전 9:00~오전 12:00",
+        "수요일,오전 9:00~오전 12:00",
+        "목요일,오전 9:00~오전 12:00",
+        "금요일,오전 9:00~오전 12:00",
+        "토요일,오전 9:00~오전 12:00"
+    ],
+    "admission_provider": "에펠탑",
+    "admission_fee": "₩21,234",
+    "admission_url": "https://www.toureiffel.paris/en/rates-offers/ticket-second-floor-stairs?utm_source=magpietravelgttd",
+    "web_site": "https://www.toureiffel.paris/fr"
+}

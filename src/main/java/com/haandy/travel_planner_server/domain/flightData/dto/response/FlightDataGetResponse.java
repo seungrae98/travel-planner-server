@@ -17,7 +17,8 @@ public record FlightDataGetResponse (
         String rtn_arv_time,
         String rtn_arv_apt,
         String rtn_time,
-        String price
+        String price,
+        String url
 ) {
     public static FlightDataGetResponse from(FlightData flightData) {
         return FlightDataGetResponse.builder()
@@ -34,6 +35,7 @@ public record FlightDataGetResponse (
                 .rtn_arv_apt(flightData.getRtn_arv_apt())
                 .rtn_time(flightData.getRtn_time())
                 .price(flightData.getPrice())
+                .url(flightData.getUrl())
                 .build();
     }
 }

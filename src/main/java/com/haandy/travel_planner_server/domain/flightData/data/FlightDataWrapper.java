@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 public class FlightDataWrapper {
     // Getter & Setter
-    private List<FlightData> popular_flights;
+    private List<FlightData> flights;
 
 }

@@ -18,14 +18,13 @@ public class AccommodationDataController {
 
     private final AccommodationDataService accommodationDataService;
 
-    @GetMapping("/{accommodationType}/data")
+    @GetMapping("/data")
     @Operation(summary = "숙소 정보 조회하기")
     public ResponseEntity<List<AccommodationDataGetResponse>> getAccommodationData(
-            @PathVariable("accommodationType") String accommodationType,
-            @RequestParam(value = "location", defaultValue = "ICN") String location,
-            @RequestParam(value = "start_date", defaultValue = "0000-00-00") String start_date,
-            @RequestParam(value = "end_date", defaultValue = "0000-00-00") String end_date
+            @RequestParam(value = "location", defaultValue = "로스엔젤레스") String location,
+            @RequestParam(value = "start_date", defaultValue = "2025-03-01") String start_date,
+            @RequestParam(value = "end_date", defaultValue = "2025-03-10") String end_date
     ) {
-        return ResponseEntity.ok(accommodationDataService.getAccommodationDataList(location, start_date, end_date, accommodationType));
+        return ResponseEntity.ok(accommodationDataService.getAccommodationDataList(location, start_date, end_date));
     }
 }
