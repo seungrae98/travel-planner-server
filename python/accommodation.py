@@ -64,14 +64,14 @@ browser.get(url)
 
 # 공정거래위원회 팝업 창 닫기
 try:
-    WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//button[@aria-label = "Close sheet"]')))
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//button[@aria-label = "Close sheet"]')))
     browser.find_element(By.XPATH, '//button[@aria-label = "Close sheet"]').click()
 except:
     print('공정거래위원회 팝업 창 없음')
 
 # 로그인 혜택 안내 창 닫기
 try:
-    WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//button[@aria-label = "로그인 혜택 안내 창 닫기."]')))
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//button[@aria-label = "로그인 혜택 안내 창 닫기."]')))
     browser.find_element(By.XPATH, '//button[@aria-label = "로그인 혜택 안내 창 닫기."]').click()
 except:
     print('로그인 혜택 안내 창 없음')
