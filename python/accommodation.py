@@ -64,10 +64,17 @@ browser.get(url)
 
 # 로그인 혜택 안내 창 닫기
 try:
-    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'a83ed08757.c21c56c305.f38b6daa18.d691166b09.ab98298258.f4552b6561')))
-    browser.find_element(By.CLASS_NAME, 'a83ed08757.c21c56c305.f38b6daa18.d691166b09.ab98298258.f4552b6561').click()
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//button[@aria-label = "로그인 혜택 안내 창 닫기."]')))
+    browser.find_element(By.XPATH, '//button[@aria-label = "로그인 혜택 안내 창 닫기."]').click()
 except:
     print('로그인 혜택 안내 창 없음')
+
+# 공정거래위원회 팝업 창 닫기
+try:
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//button[@aria-label = "닫기"]')))
+    browser.find_element(By.XPATH, '//button[@aria-label = "닫기"]').click()
+except:
+    print('공정거래위원회 팝업 창 없음')
 
 # 목적지 검색 후 클릭
 dest = sys.argv[1]  # 목적지
